@@ -4,20 +4,52 @@ var router = express.Router();
 const Board = require('../../../models/boards')
 const Article = require('../../../models/articles')
 
+// const a = {
+//   order: null, skip: 100, limit: 10
+// }
+//
+// let { sort, order, skip, limit } = a
+// sort = 1
+// order = 3
+//
+// console.log(sort&order&skip&limit)
+// console.log(sort&&order&&skip&&limit)
+
+// if (a||e === undefined) console.log('und')
+// else console.log('u')
+
 router.get('/list/:_board', (req, res, next) => {
   const _board = req.params._board
-  // const { sort, order, skip, limit } = req.query
-  //
-  // if (sort === undefined || order === undefined ||  skip === undefined ||  limit === undefined) {
-  //   return res.send({ success: false, msg: '잘못된 요청입니다' })
-  // }
+  let { search, sort, order, skip, limit } = req.query
+  // console.log(req.query)
+  // console.log(sort && order && skip && limit)
+  // console.log(search & sort & order & skip & limit)
+  if (!(sort && order && skip && limit)) return res.send({ success: false, msg: '잘못된 요청입니다' })
+  if (!search) search = ''
+  order = parseInt(order)
+  limit = parseInt(limit)
+  skip = parseInt(skip)
+  const s = {}
+  s[sort] = order
 
   const f = {}
   if (_board) f._board = _board
+  let total = 0
 
-  Article.find(f).select('-content').populate('_user', '-pwd')
+  Article.countDocuments(f)
+    .where('title').regex(search)
+    .then(r => {
+      total = r
+      return Article.find(f)
+        .where('title').regex(search)
+        .sort(s)
+        .skip(skip)
+        .limit(limit)
+        .select('-content')
+        .populate('_user', '-pwd')
+    })
     .then(rs => {
-      res.send({ success: true, ds: rs, token: req.token })
+      res.send({ success: true, t: total, ds: rs, token: req.token })
     })
     .catch(e => {
       res.send({ success: false, msg: e.message })
@@ -30,7 +62,6 @@ router.get('/read/:_id', (req, res, next) => {
   Article.findByIdAndUpdate(_id, { $inc: { 'cnt.view': 1 } }, { new: true })
     .select('content cnt.view')
     .then(r => {
-      // console.log(r)
       res.send({ success: true, d: r, token: req.token })
     })
     .catch(e => {
@@ -74,10 +105,6 @@ router.put('/:_id', (req, res, next) => {
   Article.findById(_id)
     .then(r => {
       if (!r) throw new Error('게시물이 존재하지 않습니다')
-      if(req.user.lv === 0)
-        return Article.findByIdAndUpdate(_id, { $set: req.body}, { new: true })
-      // 관리자면 수정 가능 
-        
       if (!r._user) throw new Error('손님 게시물은 수정이 안됩니다')
       if (r._user.toString() !== req.user._id) throw new Error('본인이 작성한 게시물이 아닙니다')
       return Article.findByIdAndUpdate(_id, { $set: req.body}, { new: true })
@@ -91,14 +118,12 @@ router.put('/:_id', (req, res, next) => {
 })
 
 router.delete('/:_id', (req, res, next) => {
-  if (!req.user._id) return res.send({ success: false, msg: '게시물 삭제 권한이 없습니다' })
+  if (!req.user._id) return res.send({ success: false, msg: '게시물 수정 권한이 없습니다' })
   const _id = req.params._id
 
   Article.findById(_id).populate('_user', 'lv')
     .then(r => {
       if (!r) throw new Error('게시물이 존재하지 않습니다')
-      if(req.user.lv === 0) return Article.deleteOne({ _id })
-      // 관리자면 삭제 가능
       if (!r._user) throw new Error('손님 게시물은 삭제가 안됩니다')
       if (r._user.toString() !== req.user._id) {
         if (r._user.lv < req.user.lv) throw new Error('본인이 작성한 게시물이 아닙니다')
