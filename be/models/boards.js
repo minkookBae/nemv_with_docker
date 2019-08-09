@@ -12,8 +12,10 @@ const Board = mongoose.model('Board',boardSchema)
 
 Board.findOne({})
 .then((r)=>{
-  if(!r) return Board.create({name : '아무나', lv : 3, rmk : '아무나게시판'})
-  console.log("new board create")
+  if(!r) {
+    console.log("new board create")
+    return Board.create({name : '아무나', lv : 3, rmk : '아무나게시판'})
+  }
   return Promise.resolve(r)
 })
 .catch((e) =>{
