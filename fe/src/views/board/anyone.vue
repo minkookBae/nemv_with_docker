@@ -350,7 +350,7 @@ export default {
       clearTimeout(this.timeout)
       this.timeout = setTimeout(() => {
         this.list()
-      }, 100)
+      }, 1000)
     }
   }
 }
