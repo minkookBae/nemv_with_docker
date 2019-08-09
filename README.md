@@ -33,16 +33,18 @@ module.exports = {
 **fe/config/index.js**
 ```javascript
 module.exports = {
-  host_URL : 'http://YOUR_HOST_URL' //vm의 경우 포트포워딩도 해주세요.
+  host_URL : 'http://YOUR_HOST_URL' //vm의 경우 포트포워딩도 해주세요.!! PORT 3000,8080,27017 을 각각 3000,8080,27017로...
   }
 
 ```
 
-프론트엔드 컨테이너와 백엔드 컨테이너를 연결
+프론트엔드 컨테이너와 백엔드 컨테이너를 연결(?) ((느낌이 POD간이 아닌, 외부 통신하는 것 같음.))
 
 
 
 ## how to start
+### before start, you should make configure files.
+
 
 ### for docker
 ```
@@ -64,10 +66,8 @@ docker-compose up -d  //for background
 ```
 
 
-### for local(windows . if you use linux or mac, you should change package.json file script SET(delete needed) )
-```
-git clone https://github.com/minkookbae/nemv_with_docker
-```
+### for local<br>(windows . if you use linux or mac, you should change package.json file script SET(delete needed) )
+
 ```
 cd nemv_with_docker
 ```
@@ -84,3 +84,8 @@ yarn serve2
 
 ##
 ※ package.json have [development2 ] with space at last.
+
+## your app will be running on docker(example.. vm) or local
+docker : [http://YOUR_HOST_URL:8080]
+<br>
+local : [http://localhost:8080]
