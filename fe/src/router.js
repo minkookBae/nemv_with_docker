@@ -7,7 +7,6 @@ var cfg = require('../config')
 Vue.use(Router)
 
 Vue.prototype.$axios = axios
-//const apiRootPath = process.env.NODE_ENV !== 'production' ? `http://211.252.86.170:3000/api/` : '/api/'
 var apiRootPath = ''
 if(process.env.NODE_ENV !== "production")
   apiRootPath = `${cfg.host_URL}:3000/api/`
