@@ -30,7 +30,7 @@ router.get('/read/:_id', (req, res, next) => {
   Article.findByIdAndUpdate(_id, { $inc: { 'cnt.view': 1 } }, { new: true })
     .select('content cnt.view')
     .then(r => {
-      console.log(r)
+      // console.log(r)
       res.send({ success: true, d: r, token: req.token })
     })
     .catch(e => {
@@ -74,6 +74,10 @@ router.put('/:_id', (req, res, next) => {
   Article.findById(_id)
     .then(r => {
       if (!r) throw new Error('게시물이 존재하지 않습니다')
+      if(req.user.lv === 0)
+        return Article.findByIdAndUpdate(_id, { $set: req.body}, { new: true })
+      // 관리자면 수정 가능 
+        
       if (!r._user) throw new Error('손님 게시물은 수정이 안됩니다')
       if (r._user.toString() !== req.user._id) throw new Error('본인이 작성한 게시물이 아닙니다')
       return Article.findByIdAndUpdate(_id, { $set: req.body}, { new: true })
@@ -87,12 +91,14 @@ router.put('/:_id', (req, res, next) => {
 })
 
 router.delete('/:_id', (req, res, next) => {
-  if (!req.user._id) return res.send({ success: false, msg: '게시물 수정 권한이 없습니다' })
+  if (!req.user._id) return res.send({ success: false, msg: '게시물 삭제 권한이 없습니다' })
   const _id = req.params._id
 
   Article.findById(_id).populate('_user', 'lv')
     .then(r => {
       if (!r) throw new Error('게시물이 존재하지 않습니다')
+      if(req.user.lv === 0) return Article.deleteOne({ _id })
+      // 관리자면 삭제 가능
       if (!r._user) throw new Error('손님 게시물은 삭제가 안됩니다')
       if (r._user.toString() !== req.user._id) {
         if (r._user.lv < req.user.lv) throw new Error('본인이 작성한 게시물이 아닙니다')

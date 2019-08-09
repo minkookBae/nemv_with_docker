@@ -48,8 +48,8 @@ if(process.env.NODE_ENV === "development2 ")
 else{
   use_URL = cfg.dbUrl
 }
-console.log(process.env.NODE_ENV)
-console.log(use_URL)
+// console.log(process.env.NODE_ENV)
+// console.log(use_URL)
 mongoose.connect(use_URL, { useNewUrlParser: true }, (err) => {
   if (err) return console.error(err)
   console.log('mongoose connected!')
