@@ -72,6 +72,9 @@ docker-compose up -d  //for background
 cd nemv_with_docker
 ```
 ```
+cd fe && yarn && cd../be && yarn
+```
+```
 mongod
 ```
 ```

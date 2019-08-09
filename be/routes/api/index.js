@@ -26,11 +26,11 @@ const signToken = (_id, id, lv, name, exp) => {
     const o = {
       issuer: cfg.jwt.issuer,
       subject: cfg.jwt.subject,
-      expiresIn: cfg.jwt.expiresIn, // 3분
+      expiresIn: cfg.jwt.expiresIn, // 60분
       algorithm: cfg.jwt.algorithm,
       expiresIn: exp
     }
-    jwt.sign({_id, id, lv, name }, cfg.jwt.secretKey, o, (err, token) => {
+    jwt.sign({ _id, id, lv, name }, cfg.jwt.secretKey, o, (err, token) => {
       if (err) reject(err)
       resolve(token)
     })
@@ -50,13 +50,11 @@ const getToken = async(t) => {
   vt = await verifyToken(nt)
   return { user: vt, token: nt }
 }
-
-
 router.all('*', function(req, res, next) {
   // 토큰 검사
   getToken(req.headers.authorization)
     .then((v) => {
-      //console.log(v)
+      console.log(v)
       req.user = v.user
       req.token = v.token
       next()
@@ -68,6 +66,7 @@ router.use('/page', require('./page'))
 router.use('/board', require('./board'))
 router.use('/article', require('./article'))
 router.use('/manage', require('./manage'))
+
 
 // router.use('/test', require('./test'))
 

@@ -13,9 +13,6 @@ if(process.env.NODE_ENV !== "production")
 if(process.env.NODE_ENV === 'development2 ')
   apiRootPath = 'http://localhost:3000/api/'
   
-Vue.prototype.$apiRootPath = apiRootPath
-axios.defaults.baseURL = apiRootPath
-// axios.defaults.headers.common['Authorization'] = localStorage.getItem('token')
 
 // Add a request interceptor
 axios.interceptors.request.use(function (config) {
@@ -40,17 +37,17 @@ axios.interceptors.response.use(function (response) {
 })
 
 const pageCheck = (to, from, next) => {
-   // axios.post('page', { name: to.path.replace('/', '') }, { headers: { Authorization: localStorage.getItem('token') } })
-   axios.post('page', { name: to.path })
-     .then((r) => {
-       if (!r.data.success) throw new Error(r.data.msg)
-       next()
-     })
-     .catch((e) => {
-       // next(`/block/${e.message}`)
-       next(`/block/${e.message.replace(/\//gi, ' ')}`)
-     })
- }
+  // return next()
+  axios.post('page', { name: to.path })
+    .then((r) => {      
+      if (!r.data.success) throw new Error(r.data.msg)
+      next()
+    })
+    .catch((e) => {
+      // console.error(e.message)
+      next(`/block/${e.message.replace(/\//gi, ' ')}`)
+    })
+}
 
 export default new Router({
   mode: 'history',
@@ -60,7 +57,7 @@ export default new Router({
       path: '/',
       name: 'boardAnyone',
       component: () => import('./views/board/anyone'),
-      beforeEnter: pageCheck   
+      beforeEnter: pageCheck
     },
     {
       path: '/test/lv3',
