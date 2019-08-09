@@ -86,6 +86,6 @@ yarn serve2
 ※ package.json have [development2 ] with space at last.
 
 ## your app will be running on docker(example.. vm) or local
-docker : [http://YOUR_HOST_URL:8080]
+[http://YOUR_HOST_URL:8080] : docker
 <br>
-local : [http://localhost:8080]
+[http://localhost:8080] : local
