@@ -8,10 +8,13 @@ Vue.use(Router)
 
 Vue.prototype.$axios = axios
 var apiRootPath = ''
-if(process.env.NODE_ENV !== "production")
+if(process.env.NODE_ENV !== "production ")
   apiRootPath = `${cfg.host_URL}:3000/api/`
-if(process.env.NODE_ENV === 'development2 ')
+else if(process.env.NODE_ENV === 'development2 ')
   apiRootPath = 'http://localhost:3000/api/'
+else{
+  apiRootPath = '/api/'
+}
 
 
 Vue.prototype.$apiRootPath = apiRootPath

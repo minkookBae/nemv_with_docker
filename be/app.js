@@ -45,7 +45,9 @@ const cfg = require('./config')
 var use_URL = '';
 if(process.env.NODE_ENV === "development2 ") 
   use_URL = cfg.dbUrl2
-else{
+else if(process.env.NODE_ENV === "production "){
+  use_URL = 'mongodb://localhost:27017/nemv'
+}else{
   use_URL = cfg.dbUrl
 }
 // console.log(process.env.NODE_ENV)
