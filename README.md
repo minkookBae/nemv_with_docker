@@ -44,6 +44,7 @@ module.exports = {
 
 ## how to start
 ### before start, you should make configure files.
+### after start, you should modify pages level.. (page default lv value : 0)
 
 
 ### for docker
