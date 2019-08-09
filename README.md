@@ -1,0 +1,86 @@
+# nemv3
+node express mongo vue
+## reference
+[https://fkkmemi.github.io] fkkmemi 님 블로그의 모던웹 제작 강좌<br>
+[https://github.com/jamesaud/VENoM-Docker/] jamesaud 님의 VENoM-Docker 설정
+
+
+## config 파일 세팅 방법
+
+**be/config/index.js**  
+```javascript
+module.exports = {
+    dbUrl: `mongodb://${process.env.DATABASE_URL}/nemv`, //도커용
+    dbUrl2: 'mongodb://localhost:27017/nemv', //로컬용
+    admin: {
+      id: 'admin',
+      pwd: '1234',
+      name: '관리자'
+    },
+    jwt: {
+      secretKey: 'qazwsxedc',
+      issuer: 'xxx.com',
+      subject : 'logintoken',
+      algorithm: 'HS256',    
+      expiresIn: 60 * 60, // 기본 60분
+      expiresInRemember: 60 * 60 * 24 * 6, // 기억하기 눌렀을 때 6일
+      expiresInDiv: 3 // 토큰시간 나누는 기준
+    }
+  }
+```
+이런식으로 디비 연결 문자열을 작성해야 웹서버가 정상 구동됨.
+
+**fe/config/index.js**
+```javascript
+module.exports = {
+  host_URL : 'http://YOUR_HOST_URL' //vm의 경우 포트포워딩도 해주세요.
+  }
+
+```
+
+프론트엔드 컨테이너와 백엔드 컨테이너를 연결
+
+
+
+## how to start
+
+### for docker
+```
+git clone https://github.com/minkookbae/nemv_with_docker
+```
+```
+cd nemv_with_docker
+```
+
+```
+docker-compose build
+```
+
+```
+docker-compose up
+```
+```
+docker-compose up -d  //for background
+```
+
+
+### for local(windows . if you use linux or mac, you should change package.json file script SET(delete needed) )
+```
+git clone https://github.com/minkookbae/nemv_with_docker
+```
+```
+cd nemv_with_docker
+```
+```
+mongod
+```
+```
+yarn dev2
+```
+```
+yarn serve2
+```
+
+
+##
+※ package.json have [development2 ] with space at last.

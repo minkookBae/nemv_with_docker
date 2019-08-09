@@ -1,0 +1,32 @@
+version: "3"
+
+services:
+  fe:
+    build: ./fe
+    ports:
+      - 8080:8080
+    volumes:
+      - ./fe:/data
+    depends_on:
+      - be
+    environment:
+      - API_URL=be:3000
+  be:
+    build: ./be
+    ports:
+      - 3000:3000
+    volumes:
+      - ./be:/data
+    depends_on: 
+      - server-database
+    environment:
+      - DATABASE_URL=server-database:27017
+    
+  server-database:
+    image: mongo
+    ports:
+      - 27017:27017
+    volumes:
+      - ./db:/data/db
+
+    
