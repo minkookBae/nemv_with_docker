@@ -1,58 +1,50 @@
 <template>
-  <v-container grid-list-md>
+  <v-container fluid :grid-list-md="!$vuetify.breakpoint.xs" :class="$vuetify.breakpoint.xs ? 'pa-0' : ''">
     <v-layout row wrap>
       <v-flex xs12>
         <v-card>
-          <v-img
-            class="white--text"
-            height="70px"
-            src="https://cdn.vuetifyjs.com/images/backgrounds/vbanner.jpg"
-          >
-            <v-container fill-height fluid>
-              <v-layout fill-height>
-                <v-flex xs6 align-end flexbox>
-                  <span class="headline">{{board.name}}</span>
-                </v-flex>
-                <v-flex xs6 align-end flexbox class="text-xs-right">
-                  <span>{{board.rmk}}</span>
-                </v-flex>
-              </v-layout>
-            </v-container>
-          </v-img>
+          <v-card-title class="headline">
+              <v-tooltip bottom>
+                <span slot="activator">{{board.name}}</span>
+                <span>{{board.rmk}}</span>
+              </v-tooltip>
+              <v-spacer></v-spacer>
+              <v-text-field
+                v-model="params.search"
+                append-icon="search"
+                label="검색"
+                clearable
+                style="width:40px"
+              ></v-text-field>
+            </v-card-title>
+
+          <v-data-table
+            :headers="headers"
+            :items="articles"
+            :total-items="pagination.totalItems"
+            :pagination.sync="pagination"
+            rows-per-page-text=""
+            hide-actions
+            :loading="loading"
+            class="text-no-wrap"
+            disable-initial-sort>
+            <template slot="items" slot-scope="props">
+              <td :class="headers[0].class">{{ id2date(props.item._id)}}</td>
+              <td :class="headers[1].class"><a @click="read(props.item)"> {{ props.item.title }}</a></td>
+              <td :class="headers[2].class">{{ props.item._user ? props.item._user.id : '손님' }}</td>
+              <td :class="headers[3].class">{{ props.item.cnt.view }}</td>
+              <td :class="headers[4].class">{{ props.item.cnt.like }}</td>
+            </template>
+            <template slot="no-data">
+              <v-alert :value="true" color="error" icon="warning">
+                검색 결과가 없습니다.
+              </v-alert>
+            </template>
+          </v-data-table>
+          <div class="text-xs-center pt-2">
+              <v-pagination v-model="pagination.page" :length="pages"></v-pagination>
+          </div>
         </v-card>
-      </v-flex>
-      <!-- <v-flex xs12 sm6 md4 v-for="article in articles" :key="article._id">
-        {{article}}
-      </v-flex> -->
-      <v-flex xs12 sm4 offset-sm8>
-        <v-text-field
-          label="검색"
-          append-icon="search"
-          v-model="params.search"
-          clearable
-        ></v-text-field>
-      </v-flex>
-      <v-flex xs12>
-        <v-data-table
-          :headers="headers"
-          :items="articles"
-          :total-items="pagination.totalItems"
-          :pagination.sync="pagination"
-          rows-per-page-text=""
-          :loading="loading"
-          class="text-no-wrap"
-          disable-initial-sort>
-          <template slot="items" slot-scope="props">
-            <td :class="headers[0].class">{{ id2date(props.item._id)}}</td>
-            <td :class="headers[1].class"><a @click="read(props.item)"> {{ props.item.title }}</a></td>
-            <td :class="headers[2].class">{{ props.item._user ? props.item._user.id : '손님' }}</td>
-            <td :class="headers[3].class">{{ props.item.cnt.view }}</td>
-            <td :class="headers[4].class">{{ props.item.cnt.like }}</td>
-          </template>
-        </v-data-table>
-        <div class="text-xs-center pt-2">
-          <v-pagination v-model="pagination.page" :length="pages"></v-pagination>
-        </div>
       </v-flex>
     </v-layout>
 
