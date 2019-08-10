@@ -6,9 +6,10 @@
     "serve": "cd fe && yarn serve",
     "pr": "cd fe && yarn && yarn build && cd ../be && yarn && cd .. && set NODE_ENV=production && set PORT=80 && node ./be/bin/www",
     "pm2": "cd fe && yarn && yarn build && cd ../be && yarn && cd .. && pm2 start --env pr",
-
-    "dev2" : "set NODE_ENV=development2 && node ./be/bin/www",
-    "serve2" : "set NODE_ENV=development2 && cd fe && yarn serve"
+    "dev2": "set NODE_ENV=development2 && node ./be/bin/www",
+    "serve2": "set NODE_ENV=development2 && cd fe && yarn serve"
   },
-  "dependencies": {}
+  "dependencies": {
+    "@toast-ui/vue-editor": "^1.1.1"
+  }
 }

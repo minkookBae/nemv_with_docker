@@ -43,6 +43,16 @@
         </v-list>
       </v-toolbar>
       <v-list>
+        <v-list-tile
+        :to="home.to"
+        >
+          <v-list-tile-action>
+            <v-icon v-html="home.icon"></v-icon>
+          </v-list-tile-action>
+          <v-list-tile-content          >
+            <v-list-tile-title v-text="home.title"></v-list-tile-title>
+          </v-list-tile-content>
+        </v-list-tile>
         <v-list-group
           v-for="(item, i) in items"
           v-model="item.act"
@@ -126,10 +136,17 @@ export default {
       siteTitle: '기다리는중',
       siteCopyright: '기다리는중',
       siteDark: false,
+      home : {
+        icon : 'home',
+        title : '홈',
+        to : {
+          path : '/'
+        }
+      },
       items: [
         {
           icon: 'chat',
-          title: '끄적끄적',
+          title: '이슈게시판',
           subItems: [
             // {
             //   icon: 'home',

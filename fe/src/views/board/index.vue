@@ -60,13 +60,14 @@
     >
       <v-icon>add</v-icon>
     </v-btn>
-    <v-dialog v-model="dialog" persistent max-width="500px">
+    <v-dialog v-model="dialog" persistent max-width="600px">
       <v-card v-if="!dlMode">
         <v-card-title>
           <span class="headline">{{selArticle.title}}</span>
         </v-card-title>
         <v-card-text>
-          {{selArticle.content}}
+          <viewer v-model="selArticle.content" />
+          
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
@@ -89,7 +90,7 @@
           <span class="headline">글 {{(dlMode === 1) ? '작성' : '수정'}}</span>
         </v-card-title>
         <v-card-text>
-          <v-container grid-list-md>
+          <v-container grid-list-md style="padding:0px;">
             <v-layout wrap>
               <v-flex xs12>
                 <v-text-field
@@ -100,12 +101,10 @@
                 ></v-text-field>
               </v-flex>
               <v-flex xs12>
-                <v-textarea
-                  label="내용"
-                  persistent-hint
+                <editor
                   required
                   v-model="form.content"
-                ></v-textarea>
+                />
               </v-flex>
             </v-layout>
           </v-container>
