@@ -126,16 +126,12 @@ export default {
         })
         .then(r => {
           if (!r.data.success) throw new Error(r.data.msg)
-          this.pop('가입 완료 되었습니다.', 'success')
-
+          this.$store.commit('pop', { msg: '가입 완료 되었습니다', color: 'success' })
           this.$router.push('/sign')
         })
-        .catch(e => this.pop(e.message, 'warning'))
-    },
-    pop (m, cl) {
-      this.sb.act = true
-      this.sb.msg = m
-      this.sb.color = cl
+        .catch((e) =>{
+          if (!e.response) this.$store.commit('pop', { msg: e.message, color: 'warning' })
+        })
     },
     clear () {
       this.form.id = ''

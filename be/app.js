@@ -83,8 +83,8 @@ mongoose.connect(use_URL, { useNewUrlParser: true }, (err) => {
 
 module.exports = app;
 
-var jwt = require('jsonwebtoken');
-const key = '베리베리어려운키'
+// var jwt = require('jsonwebtoken');
+// const key = '베리베리어려운키'
 // var token = jwt.sign({ id: 'memi', email: 'memi@xxx.com' }, key);
 // console.log(token)
 //

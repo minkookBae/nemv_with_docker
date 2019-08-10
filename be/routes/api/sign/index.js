@@ -22,11 +22,11 @@ const signToken = (_id, id, lv, name, rmb) => {
   })
 }
 
-router.post('/in', (req, res) => {
+router.post('/in', (req, res, next) => {
   const { id, pwd, remember } = req.body
-  if (!id) return res.send({ success: false, msg: '아이디가 없습니다.'})
-  if (!pwd) return res.send({ success: false, msg: '비밀번호가 없습니다.'})
-  if (remember === undefined) return res.send({ success: false, msg: '기억하기가 없습니다.'})
+  if (!id) throw createError(400, '아이디가 없습니다')
+  if (!pwd) throw createError(400, '비밀번호가 없습니다')
+  if (remember === undefined) throw createError(400, '기억하기가 없습니다.')
 
   User.findOne({ id })
     .then((r) => {
@@ -42,13 +42,5 @@ router.post('/in', (req, res) => {
       res.send({ success: false, msg: e.message })
     })
 })
-
-router.post('/out', (req, res) => {
-  res.send({ success: false, msg: '아직 준비 안됨.'})
-})
-
-router.all('*', function(req, res, next) {
-  next(createError(404, '그런 api 없어'));
-});
 
 module.exports = router;

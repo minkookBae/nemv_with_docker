@@ -9,7 +9,7 @@ router.get('/', function(req, res, next) {
       res.send({ success: true, users: r, token: req.token })
     })
     .catch(e => {
-      res.send({ success: false })
+      res.send({ success: false, msg: e.message })
     })
 });
 
@@ -34,9 +34,5 @@ router.delete('/:_id', (req, res, next) => {
       res.send({ success: false, msg: e.message })
     })
 })
-
-router.all('*', function(req, res, next) {
-  next(createError(404, '그런 api 없어'));
-});
 
 module.exports = router;

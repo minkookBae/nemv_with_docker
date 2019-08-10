@@ -8,6 +8,7 @@ const cfg = require('../../config')
 router.use('/sign', require('./sign'))
 router.use('/register', require('./register'))
 router.use('/site', require('./site'))
+router.use('/board', require('./board'))
 
 const verifyToken = (t) => {
   return new Promise((resolve, reject) => {
@@ -59,19 +60,13 @@ router.all('*', function(req, res, next) {
       req.token = v.token
       next()
     })
-    .catch(e => res.send({ success: false, msg: e.message }))
+    .catch(e => next(createError(401, e.message)))
 })
 
 router.use('/page', require('./page'))
-router.use('/board', require('./board'))
 router.use('/article', require('./article'))
 router.use('/manage', require('./manage'))
 
-
-// router.use('/test', require('./test'))
-
-router.all('*', function(req, res, next) {
-  next(createError(404, '그런 api 없어'));
-});
+router.all('*', require('./notFound'))
 
 module.exports = router;

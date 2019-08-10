@@ -72,7 +72,7 @@
       app
     >
       <v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon>
-      <v-toolbar-title @click="$router.push('/')" v-text="siteTitle"></v-toolbar-title>
+      <v-toolbar-title v-text="siteTitle"></v-toolbar-title>
       <v-spacer></v-spacer>
       <v-toolbar-items>
         <v-menu bottom left>
@@ -101,11 +101,22 @@
     <v-footer fixed app>
       <span>{{siteCopyright}}</span>
     </v-footer>
+    <v-snackbar
+      v-model="$store.state.sb.act"
+      :color="$store.state.sb.color"
+    >
+      {{ $store.state.sb.msg }}
+      <v-btn
+        flat
+        @click="$store.commit('pop', { act: false })"
+      >
+        닫기
+      </v-btn>
+    </v-snackbar>
   </v-app>
 </template>
 
 <script>
-
 export default {
   name: 'App',
   data () {
@@ -119,45 +130,46 @@ export default {
         {
           icon: 'chat',
           title: '끄적끄적',
-          act: true,
           subItems: [
-            {
-              icon: 'home',
-              title: '아무나',
-              to: {
-                path: '/'
-              }
-            }
+            // {
+            //   icon: 'home',
+            //   title: '아무나',
+            //   to: {
+            //     path: '/board/아무나'
+            //   }
+            // },
+            // {
+            //   icon: 'clear',
+            //   title: '지호',
+            //   to: {
+            //     path: '/board/지호'
+            //   }
+            // }
           ]
         },
         {
           icon: 'pan_tool',
           title: '레벨테스트',
-          act: true,
           subItems: [
             {
-              icon: 'home',
               title: '손님용 페이지',
               to: {
                 path: '/test/lv3'
               }
             },
             {
-              icon: 'pets',
               title: '일반유저용 페이지',
               to: {
                 path: '/test/lv2'
               }
             },
             {
-              icon: 'pan_tool',
               title: '슈퍼유저용 페이지',
               to: {
                 path: '/test/lv1'
               }
             },
             {
-              icon: 'motorcycle',
               title: '관리자용 페이지',
               to: {
                 path: '/test/lv0'
@@ -170,28 +182,24 @@ export default {
           title: '관리메뉴',
           subItems: [
             {
-              icon: 'face',
               title: '사용자관리',
               to: {
                 path: '/manage/users'
               }
             },
             {
-              icon: 'pageview',
               title: '페이지관리',
               to: {
                 path: '/manage/pages'
               }
             },
             {
-              icon: 'settings',
               title: '사이트관리',
               to: {
                 path: '/manage/sites'
               }
             },
             {
-              icon: 'settings',
               title: '게시판관리',
               to: {
                 path: '/manage/boards'
@@ -199,7 +207,6 @@ export default {
             }
           ]
         }
-
         // ,
         // {
         //   icon: 'home',
@@ -221,6 +228,7 @@ export default {
   },
   mounted () {
     this.getSite()
+    this.getBoards()
   },
   methods: {
     signOut () {
@@ -235,7 +243,25 @@ export default {
           this.siteCopyright = r.data.d.copyright
           this.siteDark = r.data.d.dark
         })
-        .catch(e => console.error(e.message))
+        .catch(e => {
+          if (!e.response) this.$store.commit('pop', { msg: e.message, color: 'warning' })
+        })
+    },
+    getBoards () {
+      this.$axios.get('/board/list')
+        .then(({ data }) => {
+          data.ds.forEach(v => {
+            this.items[0].subItems.push({
+              title: v.name,
+              to: {
+                path: `/board/${v.name}`
+              }
+            })
+          })
+        })
+        .catch(e => {
+          if (!e.response) this.$store.commit('pop', { msg: e.message, color: 'warning' })
+        })
     }
   }
 }
