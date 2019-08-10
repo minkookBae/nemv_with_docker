@@ -61,7 +61,7 @@
       <v-icon>add</v-icon>
     </v-btn>
     <v-dialog v-model="dialog" persistent max-width="600px">
-      <v-card v-if="!dlMode">
+      <v-card light v-if="!dlMode">
         <v-card-title>
           <span class="headline">{{selArticle.title}}</span>
         </v-card-title>
@@ -73,7 +73,7 @@
           <v-spacer></v-spacer>
           <v-btn color="warning darken-1" flat @click.native="modDialog()">수정</v-btn>
           <v-btn color="error darken-1" flat @click.native="ca=true">삭제</v-btn>
-          <v-btn color="secondary darken-1" flat @click.native="dialog = false">닫기</v-btn>
+          <v-btn color="success darken-1" flat @click.native="dialog = false">닫기</v-btn>
         </v-card-actions>
         <v-card-text>
           <v-card-text v-if="ca">
@@ -85,7 +85,7 @@
           </v-card-text>
         </v-card-text>
       </v-card>
-      <v-card v-else>
+      <v-card light v-else>
         <v-card-title>
           <span class="headline">글 {{(dlMode === 1) ? '작성' : '수정'}}</span>
         </v-card-title>
