@@ -29,11 +29,12 @@
             class="text-no-wrap"
             disable-initial-sort>
             <template slot="items" slot-scope="props">
-              <td :class="headers[0].class">{{ id2date(props.item._id)}}</td>
-              <td :class="headers[1].class"><a @click="read(props.item)"> {{ props.item.title }}</a></td>
-              <td :class="headers[2].class">{{ props.item._user ? props.item._user.id : '손님' }}</td>
-              <td :class="headers[3].class">{{ props.item.cnt.view }}</td>
-              <td :class="headers[4].class">{{ props.item.cnt.like }}</td>
+              <td :class="headers[0].class"><a @click="read(props.item)"> {{ props.item.title }}</a></td>
+              <td :class="headers[1].class">{{ props.item._user ? props.item._user.id : '손님' }}</td>
+              <td :class="headers[2].class">{{ props.item.cnt.view }}</td>
+              <td :class="headers[3].class">{{ props.item.cnt.like }}</td>
+              <td :class="headers[4].class">{{ id2date(props.item._id)}}</td>
+
             </template>
             <template slot="no-data">
               <v-alert :value="true" color="error" icon="warning">
@@ -217,11 +218,11 @@ export default {
       },
       response : '',
       headers: [
-        { text: '날짜', value: '_id', sortable: true, class: 'hidden-sm-and-down' },
         { text: '제목', value: 'title', sortable: true, align: 'left' },
         { text: '글쓴이', value: '_user', sortable: false },
         { text: '조회수', value: 'cnt.view', sortable: true },
-        { text: '추천', value: 'cnt.like', sortable: true }
+        { text: '추천', value: 'cnt.like', sortable: true },
+        { text: '날짜', value: '_id', sortable: true, class: 'hidden-sm-and-down' }
       ],
       loading: false,
       itemTotal: 0,
@@ -280,7 +281,7 @@ export default {
       return order
     },
     setOrder () {
-      return this.pagination.descending ? -1 : 1
+      return this.pagination.descending ? 1 : -1
     },
     pages () {
       if (this.pagination.rowsPerPage == null ||

@@ -10,7 +10,7 @@
           <v-card-text>
             <v-form>
               <v-text-field prepend-icon="person" v-model="form.id" label="아이디" type="text"></v-text-field>
-              <v-text-field prepend-icon="lock" v-model="form.pwd" label="비밀번호" type="password"></v-text-field>
+              <v-text-field prepend-icon="lock" v-model="form.pwd" label="비밀번호" type="password" @keyup.enter="signIn"></v-text-field>
               <v-checkbox
                 v-model="form.remember"
                 label="암호 기억하기(최대 7일간 보관 됩니다.)"
