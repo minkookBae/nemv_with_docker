@@ -2,6 +2,7 @@ var express = require('express');
 var createError = require('http-errors');
 var router = express.Router();
 const Board = require('../../../models/boards')
+const Comment = require('../../../models/comments')
 const Article = require('../../../models/articles')
 
 
@@ -46,11 +47,20 @@ router.get('/list/:_board', (req, res, next) => {
 router.get('/read/:_id', (req, res, next) => {
   const _id = req.params._id
 
-  Article.findByIdAndUpdate(_id, { $inc: { 'cnt.view': 1 } }, { new: true })
-    .select('content cnt.view')
+  let atc = {}
+
+  
+  Article.findByIdAndUpdate(_id, { $inc: { 'cnt.view': 1 } }, { new: true }).lean()
+    .select('content cnt')
     .then(r => {
       if(!r) throw new Error('잘못된 게시판입니다.')
-      res.send({ success: true, d: r, token: req.token })
+      atc = r
+      atc._comments = []
+      return Comment.find({ _article: atc._id }).populate({ path: '_user', select: 'id name'}).sort({ _id: 1 }).limit(1000)
+    })
+    .then(rs => {
+      if (rs) atc._comments = rs
+      res.send({ success: true, d: atc, token: req.token })
     })
     .catch(e => {
       res.send({ success: false, msg: e.message })

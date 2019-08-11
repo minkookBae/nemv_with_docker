@@ -64,6 +64,14 @@
       <v-card light v-if="!dlMode">
         <v-card-title>
           <span class="headline">{{selArticle.title}}</span>
+          <v-spacer></v-spacer>
+          <v-btn
+              icon
+              @click="dialog=!dialog"
+          >
+            <v-icon>clear</v-icon>
+          </v-btn>
+
         </v-card-title>
         <v-card-text>
           <viewer v-model="selArticle.content" />
@@ -75,19 +83,67 @@
           <v-btn color="error darken-1" flat @click.native="ca=true">삭제</v-btn>
           <v-btn color="success darken-1" flat @click.native="dialog = false">닫기</v-btn>
         </v-card-actions>
+        
+         <v-card-text v-if="ca">
+          <v-alert v-model="ca" type="warning">
+            <h4>정말 진행 하시겠습니까?</h4>
+            <v-btn color="error" @click="del()">확인</v-btn>
+            <v-btn color="secondary" @click="ca=false">취소</v-btn>
+          </v-alert>
+        </v-card-text>
+        <v-divider></v-divider>
+        <v-list two-line v-for="comment in selArticle._comments" :key="comment._id">
+          <v-list-tile>
+            <v-list-tile-content>
+              <v-list-tile-title>{{comment.content}}</v-list-tile-title>
+              <v-list-tile-sub-title>{{comment._user ? comment._user.id : '손님'}}</v-list-tile-sub-title>
+            </v-list-tile-content>
+            <v-list-tile-action>
+              <v-btn
+                  icon
+                  ripple
+                  @click="commentDialogOpen(comment)"
+              >
+                <v-icon color="warning lighten-1">
+                  create
+                </v-icon>
+              </v-btn>
+
+             </v-list-tile-action>
+            <v-list-tile-action>
+              <v-btn
+                  icon
+                  ripple
+                  @click="delComment(comment)"
+              >
+                <v-icon color="error">
+                  clear
+                </v-icon>
+              </v-btn>
+            </v-list-tile-action>
+          </v-list-tile>
+          <v-divider></v-divider>
+        </v-list>
         <v-card-text>
-          <v-card-text v-if="ca">
-            <v-alert v-model="ca" type="warning">
-              <h4>정말 진행 하시겠습니까?</h4>
-              <v-btn color="error" @click="del()">확인</v-btn>
-              <v-btn color="secondary" @click="ca=false">취소</v-btn>
-            </v-alert>
-          </v-card-text>
+          <v-text-field
+          label="댓글 작성"
+          v-model="formComment.content"
+          append-icon="message"
+          @keyup.enter = "addComment()"
+          >
+          </v-text-field>
         </v-card-text>
       </v-card>
       <v-card light v-else>
         <v-card-title>
           <span class="headline">글 {{(dlMode === 1) ? '작성' : '수정'}}</span>
+          <v-spacer></v-spacer>
+          <v-btn
+              icon
+              @click="dialog=!dialog"
+          >
+            <v-icon>clear</v-icon>
+          </v-btn>
         </v-card-title>
         <v-card-text>
           <v-container grid-list-md style="padding:0px;">
@@ -116,8 +172,31 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
+        <v-dialog width="400" v-model="commentDialog">
+      <v-card>
+        <v-card-text>
+          <v-text-field
+              label="댓글 수정"
+              v-model="selComment.content"
+              @keyup.enter="modComment()"
+          >
+
+           </v-text-field>
+
+         </v-card-text>
+        <v-card-actions>
+          <v-btn color="warning" @click="modComment()">
+            수정
+          </v-btn>
+          <v-btn color="secondary" @click="commentDialog = false">닫기</v-btn>
+        </v-card-actions>
+      </v-card>
+
+     </v-dialog>
   </v-container>
 </template>
+
+
 <script>
 import boardCard from '@/components/manage/boardCard'
 export default {
@@ -130,11 +209,13 @@ export default {
       },
       articles: [],
       dialog: false,
+      commentDialog : false,
       lvs: [0, 1, 2, 3],
       form: {
         title: '',
         content: ''
       },
+      response : '',
       headers: [
         { text: '날짜', value: '_id', sortable: true, class: 'hidden-sm-and-down' },
         { text: '제목', value: 'title', sortable: true, align: 'left' },
@@ -147,7 +228,12 @@ export default {
       pagination: {},
       getTotalPage: 1,
       dlMode: 0, // 0: read, 1: write, 2: modify
-      selArticle: {},
+      selArticle: {
+        _comments : []
+      },
+      selComment : {
+        content : ''
+      },
       ca: false,
       params: {
         draw: 0,
@@ -157,7 +243,10 @@ export default {
         order: 0,
         limit: 1
       },
-      timeout: null
+      timeout: null,
+      formComment : {
+        content : ''
+      }
     }
   },
   mounted () {
@@ -201,6 +290,12 @@ export default {
     },
   },
   methods: {
+    commentDialogOpen (c) {
+      this.commentDialog = true
+      this.selComment = c
+    },
+
+
     addDialog () {
       this.dialog = true
       this.dlMode = 1
@@ -280,6 +375,7 @@ export default {
           this.dialog = true
           this.selArticle.content = data.d.content
           this.selArticle.cnt.view = data.d.cnt.view
+          this.selArticle._comments = data.d._comments
           this.loading = false
         })
         .catch((e) => {
@@ -324,7 +420,41 @@ export default {
       this.timeout = setTimeout(() => {
         this.list()
       }, 1000)
-    }
+    },
+    addComment () {
+      this.$axios.post(`comment/${this.selArticle._id}`, this.formComment)
+        .then(({ data }) => {
+          if (!data.success) throw new Error(data.msg)
+          this.formComment.content = ''
+          this.read(this.selArticle)
+          // this.list()
+        })
+        .catch((e) => {
+          if (!e.response) this.$store.commit('pop', { msg: e.message, color: 'warning' })
+        })
+    },
+    delComment (cmt) {
+      this.$axios.delete(`comment/${cmt._id}`)
+        .then(({ data }) => {
+          if (!data.success) throw new Error(data.msg)
+          this.read(this.selArticle)
+        })
+        .catch((e) => {
+          if (!e.response) this.$store.commit('pop', { msg: e.message, color: 'warning' })
+        })
+    },
+    modComment () {
+      if (!this.selComment.content) return this.$store.commit('pop', { msg: '내용을 작성해주세요', color: 'warning' })
+      this.commentDialog = false
+      this.$axios.put(`comment/${this.selComment._id}`, { content: this.selComment.content })
+        .then(({ data }) => {
+          if (!data.success) throw new Error(data.msg)
+          this.read(this.selArticle)
+        })
+        .catch((e) => {
+          if (!e.response) this.$store.commit('pop', { msg: e.message, color: 'warning' })
+        })    
+  }
   }
 }
 </script>
