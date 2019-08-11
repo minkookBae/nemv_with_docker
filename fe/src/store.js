@@ -6,6 +6,7 @@ Vue.use(Vuex)
 export default new Vuex.Store({
   state: {
     token: localStorage.getItem('token'),
+    name : '손',
     sb : {
       act : false,
       msg : '',
@@ -25,6 +26,13 @@ export default new Vuex.Store({
       state.sb.color = d.color
       state.sb.act = false
       if(d.act === undefined) state.sb.act = true
+    },
+    getName(state){
+      state.name = localStorage.getItem('name')
+      localStorage.removeItem('name')
+    },
+    delName(state){
+      state.name = '손'
     }
   },
   actions: {

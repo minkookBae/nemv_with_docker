@@ -30,8 +30,7 @@
               </v-badge>
             </v-list-tile-avatar>
             <v-list-tile-content>
-              <!-- <v-list-tile-title>{{ `${$user.name} 님 (${$user.job})` }}</v-list-tile-title> -->
-              <v-list-tile-title>관리자</v-list-tile-title>
+              <v-list-tile-title>{{ this.$store.state.name }}님</v-list-tile-title>
 
             </v-list-tile-content>
             <v-list-tile-action>
@@ -251,7 +250,8 @@ export default {
     signOut () {
       // localStorage.removeItem('token')
       this.$store.commit('delToken')
-      this.$router.push('/')
+      this.$store.commit('delName')
+      this.$router.replace('/')
     },
     getSite () {
       this.$axios.get('/site')

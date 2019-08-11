@@ -17,7 +17,7 @@ const signToken = (_id, id, lv, name, rmb) => {
     if (rmb) o.expiresIn = cfg.jwt.expiresInRemember // 6일
     jwt.sign({_id, id, lv, name }, cfg.jwt.secretKey, o, (err, token) => {
       if (err) reject(err)
-      resolve(token)
+      resolve({token, name})
     })
   })
 }
@@ -36,7 +36,7 @@ router.post('/in', (req, res, next) => {
       return signToken(r._id, r.id, r.lv, r.name, remember)
     })
     .then((r) => {
-      res.send({ success: true, token: r })
+      res.send({ success: true, token: r.token, name : r.name })
     })
     .catch((e) => {
       res.send({ success: false, msg: e.message })
