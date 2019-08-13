@@ -16,7 +16,7 @@
                 clearable
                 style="width:40px"
               ></v-text-field>
-            </v-card-title>
+          </v-card-title>
 
           <v-data-table
             :headers="headers"
@@ -29,12 +29,15 @@
             class="text-no-wrap"
             disable-initial-sort>
             <template slot="items" slot-scope="props">
-              <td :class="headers[0].class"><a @click="read(props.item)"> {{ props.item.title }}</a></td>
-              <td :class="headers[1].class">{{ props.item._user ? props.item._user.id : '손님' }}</td>
-              <td :class="headers[2].class">{{ props.item.cnt.view }}</td>
-              <td :class="headers[3].class">{{ props.item.cnt.like }}</td>
-              <td :class="headers[4].class">{{ id2date(props.item._id)}}</td>
-
+              <tr>
+                <td :class="headers[0].class"><a @click="read(props.item)">{{ props.item.title }}</a>{{ props.item.labels.slice(0,).toString().replace(',',' ') }}</td>
+                <td :class="headers[1].class">{{ props.item.labels.slice(0,).toString().replace(',',' ') }}</td>
+                <td :class="headers[2].class">{{ props.item._user ? props.item._user.name : '손님' }}</td>
+                <td :class="headers[3].class">{{ props.item.cnt.view }}</td>
+                <td :class="headers[4].class">{{ props.item.cnt.like }}</td>
+                <td :class="headers[5].class">{{props.item.comments_count ? props.item.comments_count : ''}}</td>
+                <td :class="headers[6].class">{{ id2date(props.item._id)}}</td>
+              </tr>
             </template>
             <template slot="no-data">
               <v-alert :value="true" color="error" icon="warning">
@@ -68,12 +71,15 @@
           <v-spacer></v-spacer>
           <v-btn
               icon
-              @click="dialog=!dialog"
+              @click="dialog=!dialog, ca=false"
           >
             <v-icon>clear</v-icon>
           </v-btn>
 
         </v-card-title>
+        <v-card-text style="padding:0px 16px">
+          <span class="headline">{{selArticle.labels ? selArticle.labels.slice(0,).toString().replace(',',' ') : ''}}</span>
+        </v-card-text>
         <v-card-text>
           <viewer v-model="selArticle.content" />
           
@@ -82,13 +88,13 @@
           <v-spacer></v-spacer>
           <v-btn color="warning darken-1" flat @click.native="modDialog()">수정</v-btn>
           <v-btn color="error darken-1" flat @click.native="ca=true">삭제</v-btn>
-          <v-btn color="success darken-1" flat @click.native="dialog = false">닫기</v-btn>
+          <v-btn color="success darken-1" flat @click.native="dialog = false, ca = false">닫기</v-btn>
         </v-card-actions>
         
          <v-card-text v-if="ca">
           <v-alert v-model="ca" type="warning">
             <h4>정말 진행 하시겠습니까?</h4>
-            <v-btn color="error" @click="del()">확인</v-btn>
+            <v-btn color="error" @click="del(), ca=false">확인</v-btn>
             <v-btn color="secondary" @click="ca=false">취소</v-btn>
           </v-alert>
         </v-card-text>
@@ -97,7 +103,7 @@
           <v-list-tile>
             <v-list-tile-content>
               <v-list-tile-title>{{comment.content}}</v-list-tile-title>
-              <v-list-tile-sub-title>{{comment._user ? comment._user.id : '손님'}}</v-list-tile-sub-title>
+              <v-list-tile-sub-title>{{comment._user ? comment._user.name : '손님'}}</v-list-tile-sub-title>
             </v-list-tile-content>
             <v-list-tile-action>
               <v-btn
@@ -200,6 +206,7 @@
 
 <script>
 import boardCard from '@/components/manage/boardCard'
+import moment from 'moment'
 export default {
   components: { boardCard },
   data () {
@@ -219,14 +226,18 @@ export default {
       response : '',
       headers: [
         { text: '제목', value: 'title', sortable: true, align: 'left' },
+        { text: '라벨', value: 'labels', sortable : true },
         { text: '글쓴이', value: '_user', sortable: false },
         { text: '조회수', value: 'cnt.view', sortable: true },
         { text: '추천', value: 'cnt.like', sortable: true },
+        { text: '댓글', value: 'comments', sortable: true, class : 'font-size24'},
         { text: '날짜', value: '_id', sortable: true, class: 'hidden-sm-and-down' }
       ],
       loading: false,
       itemTotal: 0,
-      pagination: {},
+      pagination: {
+        rowsPerPage : 10
+      },
       getTotalPage: 1,
       dlMode: 0, // 0: read, 1: write, 2: modify
       selArticle: {
@@ -296,7 +307,6 @@ export default {
       this.selComment = c
     },
 
-
     addDialog () {
       this.dialog = true
       this.dlMode = 1
@@ -336,7 +346,7 @@ export default {
         .catch((e) => {
           if (!e.response) this.$store.commit('pop', { msg: e.message, color: 'warning' })
         })
-    },
+    },   
     list () {
       if (this.loading) return
       if (!this.board._id) return
@@ -360,6 +370,7 @@ export default {
           this.pagination.totalItems = data.t
           this.articles = data.ds
           this.loading = false
+          return this.articles
         })
         .catch((e) => {
           if (!e.response) this.$store.commit('pop', { msg: e.message, color: 'warning' })
@@ -413,14 +424,24 @@ export default {
         })
     },
     id2date (val) {
+      moment.locale('ko')
       if (!val) return '잘못된 시간 정보'
-      return new Date(parseInt(val.substring(0, 8), 16) * 1000).toLocaleString()
+
+      var time = moment(parseInt(val.substring(0, 8), 16) * 1000)
+      var diff = moment().diff(moment(time))
+      
+      if(diff > 604800000) //일주일
+        return time.format("YYYY년 MM월 DD일")
+      else{
+        return moment(time).startOf('minute').fromNow() //일주일 이하면 minute로 시간차 뿌림
+      }
+
     },
     delay () {
       clearTimeout(this.timeout)
       this.timeout = setTimeout(() => {
         this.list()
-      }, 1000)
+      }, 500)
     },
     addComment () {
       this.$axios.post(`comment/${this.selArticle._id}`, this.formComment)
@@ -455,7 +476,13 @@ export default {
         .catch((e) => {
           if (!e.response) this.$store.commit('pop', { msg: e.message, color: 'warning' })
         })    
-  }
+    },
   }
 }
 </script>
+
+<style>
+  .font-size24{
+    font-size: 12px !important;
+  }
+</style>

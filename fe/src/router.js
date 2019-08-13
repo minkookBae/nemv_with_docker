@@ -36,8 +36,10 @@ axios.interceptors.request.use(function (config) {
 axios.interceptors.response.use(function (response) {
   // Do something with response data
   const token = response.data.token
+  const name = response.data.name
   // console.log(token)
   if (token) localStorage.setItem('token', token)
+  if (name) localStorage.setItem('name', name)
   return response
 }, function (error) {
   // Do something with response error
@@ -90,6 +92,13 @@ export default new Router({
       component : () => import('./views/board'),
       beforeEnter : pageCheck
     },
+    {
+      path : '/board/:name/:article_id',
+      name : "article",
+      component : () => import('./views/board/article'),
+      beforeEnter : pageCheck
+    }
+    ,
     {
       path: '/test/lv3',
       name: 'testLv3',

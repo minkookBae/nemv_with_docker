@@ -16,11 +16,11 @@
                 overlap
                 color="orange"
               >
-                <v-icon
+                <!-- <v-icon
                   slot="badge"
                   dark
                   small
-                >notifications</v-icon>
+                >notifications</v-icon> -->
                 <v-icon
                   large
                   color="grey darken-1"
@@ -131,7 +131,7 @@ export default {
   data () {
     return {
       drawer: null,
-      mini: false,
+      mini: true,
       siteTitle: '기다리는중',
       siteCopyright: '기다리는중',
       siteDark: false,
@@ -145,7 +145,7 @@ export default {
       items: [
         {
           icon: 'chat',
-          title: '이슈게시판',
+          title: '컨테이너 이슈',
           subItems: [
             // {
             //   icon: 'home',
@@ -163,36 +163,36 @@ export default {
             // }
           ]
         },
-        {
-          icon: 'pan_tool',
-          title: '레벨테스트',
-          subItems: [
-            {
-              title: '손님용 페이지',
-              to: {
-                path: '/test/lv3'
-              }
-            },
-            {
-              title: '일반유저용 페이지',
-              to: {
-                path: '/test/lv2'
-              }
-            },
-            {
-              title: '슈퍼유저용 페이지',
-              to: {
-                path: '/test/lv1'
-              }
-            },
-            {
-              title: '관리자용 페이지',
-              to: {
-                path: '/test/lv0'
-              }
-            }
-          ]
-        },
+        // {
+        //   icon: 'pan_tool',
+        //   title: '레벨테스트',
+        //   subItems: [
+        //     {
+        //       title: '손님용 페이지',
+        //       to: {
+        //         path: '/test/lv3'
+        //       }
+        //     },
+        //     {
+        //       title: '일반유저용 페이지',
+        //       to: {
+        //         path: '/test/lv2'
+        //       }
+        //     },
+        //     {
+        //       title: '슈퍼유저용 페이지',
+        //       to: {
+        //         path: '/test/lv1'
+        //       }
+        //     },
+        //     {
+        //       title: '관리자용 페이지',
+        //       to: {
+        //         path: '/test/lv0'
+        //       }
+        //     }
+        //   ]
+        // },
         {
           icon: 'settings',
           title: '관리메뉴',
@@ -250,7 +250,6 @@ export default {
     signOut () {
       // localStorage.removeItem('token')
       this.$store.commit('delToken')
-      this.$store.commit('delName')
       this.$router.replace('/')
     },
     getSite () {

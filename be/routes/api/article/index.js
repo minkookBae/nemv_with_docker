@@ -4,6 +4,7 @@ var router = express.Router();
 const Board = require('../../../models/boards')
 const Comment = require('../../../models/comments')
 const Article = require('../../../models/articles')
+const Label = require('../../../models/labels')
 
 
 router.get('/list/:_board', (req, res, next) => {
@@ -48,7 +49,6 @@ router.get('/read/:_id', (req, res, next) => {
   const _id = req.params._id
 
   let atc = {}
-
   
   Article.findByIdAndUpdate(_id, { $inc: { 'cnt.view': 1 } }, { new: true }).lean()
     .select('content cnt')
@@ -56,7 +56,7 @@ router.get('/read/:_id', (req, res, next) => {
       if(!r) throw new Error('잘못된 게시판입니다.')
       atc = r
       atc._comments = []
-      return Comment.find({ _article: atc._id }).populate({ path: '_user', select: 'id name'}).sort({ _id: 1 }).limit(1000)
+      return Comment.find({ _article: atc._id }).populate({ path: '_user', select: 'id name'}).sort({ _id: 1 }).limit(100)
     })
     .then(rs => {
       if (rs) atc._comments = rs
@@ -81,6 +81,7 @@ router.post('/:_board', (req, res, next) => {
         title,
         content,
         _board,
+        labels : [],
         ip: '1.1.1.1',//req.ip,
         _user: null
       }
@@ -123,7 +124,8 @@ router.delete('/:_id', (req, res, next) => {
   Article.findById(_id).populate('_user', 'lv')
     .then(r => {
       if (!r) throw new Error('게시물이 존재하지 않습니다')
-      if (!r._user) throw new Error('손님 게시물은 삭제가 안됩니다')
+      if (!r._user)
+        if (r._user.lv < req.user.lv) throw new Error('손님 게시물은 삭제가 안됩니다')
       if (r._user.toString() !== req.user._id) {
         if (r._user.lv < req.user.lv) throw new Error('본인이 작성한 게시물이 아닙니다')
       }

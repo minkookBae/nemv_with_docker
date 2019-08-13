@@ -2,6 +2,7 @@ const mongoose = require('mongoose')
 
 mongoose.set('useCreateIndex', true)
 const articleSchema = new mongoose.Schema({
+  article_num : {type : Number , default : '', index : true},
   title: { type: String, default: '', index: true },
   content: { type: String, default: '' },
   cnt: {
@@ -9,7 +10,8 @@ const articleSchema = new mongoose.Schema({
     like: { type: Number, default: 0 }
   },
   ip: { type: String, default: '' },
-  comments: [],
+  comments_count : {type : Number, default : 0},
+  labels : [],
   _user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', index: true },
   _board: { type: mongoose.Schema.Types.ObjectId, ref: 'Board', index: true }
 })

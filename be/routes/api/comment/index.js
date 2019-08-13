@@ -6,7 +6,6 @@ const Comment = require('../../../models/comments')
 const cfg = require('../../../config')
 
  router.post('/:_article', (req, res, next) => {
-     console.log("이까진 왔다")
   const _article = req.params._article
   if (!_article) throw createError(400, '게시물이 선택되지 않았습니다')
   const { content } = req.body
@@ -14,7 +13,7 @@ const cfg = require('../../../config')
    if (!content) throw createError(400, '내용이 없습니다')
 //   if (!response) throw createError(400, '로봇 검증이 없습니다')
 
-    Article.findById(_article)
+    Article.findByIdAndUpdate(_article, {$inc : {comments_count : 1}}, {new : true})
     .then(r => {
     if (!r) throw createError(400, '잘못된 게시물입니다')
     // if (r.lv < req.user.lv) throw createError(403, '권한이 없습니다')
@@ -25,7 +24,7 @@ const cfg = require('../../../config')
         _user: null
     }
     if (req.user._id) cmt._user = req.user._id
-    return Comment.create(cmt)
+    return  Comment.create(cmt)
     })
     .then(r => {
     if (!r) throw new Error('게시물이 생성되지 않았습니다')
@@ -76,6 +75,12 @@ const cfg = require('../../../config')
           if (r._user.lv < req.user.lv) throw new Error('본인이 작성한 댓글이 아닙니다')
         }
       }
+      Article.findByIdAndUpdate(r._article, {$inc : {comments_count : -1}})
+      .then(rs=>{
+      })
+      .catch(e =>{
+        res.send({success : false, msg : e.message})
+      })
       return Comment.deleteOne({ _id })
     })
     .then(r => {

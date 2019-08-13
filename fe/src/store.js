@@ -16,23 +16,19 @@ export default new Vuex.Store({
   mutations: {
     getToken (state) {
       state.token = localStorage.getItem('token')
+      state.name = localStorage.getItem('name')
     },
     delToken (state) {
       localStorage.removeItem('token')
+      localStorage.removeItem('name')
       state.token = null
+      state.name = '손'
     },
     pop (state, d) {
       state.sb.msg = d.msg
       state.sb.color = d.color
       state.sb.act = false
       if(d.act === undefined) state.sb.act = true
-    },
-    getName(state){
-      state.name = localStorage.getItem('name')
-      localStorage.removeItem('name')
-    },
-    delName(state){
-      state.name = '손'
     }
   },
   actions: {

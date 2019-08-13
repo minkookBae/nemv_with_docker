@@ -48,7 +48,6 @@ export default {
 
           localStorage.setItem('token', r.data.token)
           localStorage.setItem('name', r.data.name)          
-          this.$store.commit('getName')
           this.$store.commit('getToken')
           this.$router.replace('/')
         })
