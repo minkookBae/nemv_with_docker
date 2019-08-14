@@ -4,7 +4,6 @@ var router = express.Router();
 const Board = require('../../../models/boards')
 const Comment = require('../../../models/comments')
 const Article = require('../../../models/articles')
-const multer = require('multer')
 
 
 router.get('/list/:_board', (req, res, next) => {
@@ -136,12 +135,6 @@ router.delete('/:_id', (req, res, next) => {
     .catch(e => {
       res.send({ success: false, msg: e.message })
     })
-})
-
-router.post('/image/',multer({desc : 'public/'}).single('bin'), (req,res,next)=>{
-  console.log(req.body)
-  console.log(req.file)
-  res.status(204).send()
 })
 
 router.all('*', function(req, res, next) {
