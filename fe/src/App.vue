@@ -75,6 +75,30 @@
             </v-list-tile-content>
           </v-list-tile>
         </v-list-group>
+
+        <!-- 관리자용 리스트업 예정 -->
+        <v-list-group
+          v-for="(item, i) in items_admin"
+          v-model="item.act"
+          :prepend-icon="item.icon"
+          :key="i+100"
+          no-action
+        >
+          <v-list-tile slot="activator">
+            <v-list-tile-content>
+              <v-list-tile-title>{{ item.title }}</v-list-tile-title>
+            </v-list-tile-content>
+          </v-list-tile>
+          <v-list-tile
+            v-for="subItem in item.subItems"
+            :key="subItem.title"
+            :to="subItem.to"
+          >
+            <v-list-tile-content>
+              <v-list-tile-title>{{ subItem.title }}</v-list-tile-title>
+            </v-list-tile-content>
+          </v-list-tile>
+        </v-list-group>
       </v-list>
     </v-navigation-drawer>
     <v-toolbar
@@ -144,7 +168,7 @@ export default {
       },
       items: [
         {
-          icon: 'chat',
+          icon: 'announcement',
           title: '컨테이너 이슈',
           subItems: [
             // {
@@ -193,6 +217,53 @@ export default {
         //     }
         //   ]
         // },
+        // {
+        //   icon: 'settings',
+        //   title: '관리메뉴',
+        //   subItems: [
+        //     {
+        //       title: '사용자관리',
+        //       to: {
+        //         path: '/manage/users'
+        //       }
+        //     },
+        //     {
+        //       title: '페이지관리',
+        //       to: {
+        //         path: '/manage/pages'
+        //       }
+        //     },
+        //     {
+        //       title: '사이트관리',
+        //       to: {
+        //         path: '/manage/sites'
+        //       }
+        //     },
+        //     {
+        //       title: '게시판관리',
+        //       to: {
+        //         path: '/manage/boards'
+        //       }
+        //     }
+        //   ]
+        // }
+        // ,
+        // {
+        //   icon: 'home',
+        //   title: '홈aaa',
+        //   to: {
+        //     path: '/home'
+        //   }
+        // },
+        // {
+        //   icon: 'face',
+        //   title: 'header',
+        //   to: {
+        //     path: '/header'
+        //   }
+        // }
+      ],
+      items_admin : [
         {
           icon: 'settings',
           title: '관리메뉴',
@@ -223,22 +294,8 @@ export default {
             }
           ]
         }
-        // ,
-        // {
-        //   icon: 'home',
-        //   title: '홈aaa',
-        //   to: {
-        //     path: '/home'
-        //   }
-        // },
-        // {
-        //   icon: 'face',
-        //   title: 'header',
-        //   to: {
-        //     path: '/header'
-        //   }
-        // }
-      ],
+      ]
+      ,
       title: this.$apiRootPath
     }
   },

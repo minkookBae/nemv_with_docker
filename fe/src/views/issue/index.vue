@@ -2,9 +2,10 @@
     <v-container fluid :grid-list-md="!$vuetify.breakpoint.xs" :class="$vuetify.breakpoint.xs ? 'pa-0' : ''">
         <v-layout row wrap>
             <v-flex xs12 md9>
-                <v-flex md9>
+                <template> 
+                    <!-- 이슈 내용 시작 -->
                     <v-card light>
-                        <v-card-title class="headline">
+                        <v-card-title class="headline title_area">
                             {{issue.title}}
                             {{issue.labels ? issue.labels.slice(0,).toString().replace(',',' ') : ''}}
                             <v-spacer></v-spacer>
@@ -16,34 +17,39 @@
 
                         </v-card-text>
                     </v-card>
-                    <!-- 이슈 내용 렌더링 -->
-                    <v-spacer><br></v-spacer>
-                    <template v-for="(item, i) in issue._comments">
-                        <v-card :key="i" light>
-                            <v-card-text>
-                                <b>{{item._user.name}}</b>님의 코멘트<span style="font-size:0.8rem;">{{id2date_2(item._id)}}</span>
-                            </v-card-text>
-                        </v-card>
-                        <v-card :key="i+1000" light>
-                            <v-card-text>
-                                <viewer v-model="item.content" />
-                            </v-card-text>
-                        </v-card>
-                        <br :key = "i+2000">
-                    </template>
-                    <!-- 댓글 리스트 렌더링 -->
+                </template>
+                <!-- 이슈 내용 렌더링 -->
+                <v-spacer><br></v-spacer>
+                <template v-for="(item, i) in issue._comments">
+                    <v-card :key="i" light>
+                        <v-card-text class="title_area">
+                            <b>{{item._user.name}}</b>님의 코멘트<span style="font-size:0.8rem;">{{id2date_2(item._id)}}</span>
+                        </v-card-text>
+                    </v-card>
+                    <v-card :key="i+1000" light>
+                        <v-card-text>
+                            <viewer v-model="item.content" />
+                        </v-card-text>
+                    </v-card>
+                    <br :key = "i+2000">
+                </template>
+                <!-- 댓글 리스트 렌더링 -->
+
+                <!-- 댓글 부분 시작 -->
+                <template>
                     <v-card light>
                         <editor
                         required
                         v-model="formComment.content"
                         height = "200px"
                         />
-                        
-                        <v-btn color="success" @click="addComment()">
-                            코멘트 작성
-                        </v-btn>
+                        <v-card-text style="text-align : right; padding-top : 4px; padding-bottom:4px;">
+                            <v-btn color="success" @click="addComment()">
+                                코멘트 작성
+                            </v-btn>
+                        </v-card-text>
                     </v-card>
-                </v-flex>
+                </template>
             </v-flex>
             <v-flex>
                 <v-card>
@@ -118,3 +124,9 @@ export default {
 
 }
 </script>
+
+<style>
+    .title_area {
+        background-color : whitesmoke
+    }
+</style>

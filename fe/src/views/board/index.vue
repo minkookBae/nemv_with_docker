@@ -143,7 +143,7 @@
       </v-card>
       <v-card light v-else>
         <v-card-title>
-          <span class="headline">글 {{(dlMode === 1) ? '작성' : '수정'}}</span>
+          <span class="headline">이슈 {{(dlMode === 1) ? '작성' : '수정'}}</span>
           <v-spacer></v-spacer>
           <v-btn
               icon
