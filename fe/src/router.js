@@ -93,9 +93,9 @@ export default new Router({
       beforeEnter : pageCheck
     },
     {
-      path : '/board/:name/:article_id',
-      name : "article",
-      component : () => import('./views/board/article'),
+      path : '/issue/:article_id',
+      name : "issue",
+      component : () => import('./views/issue'),
       beforeEnter : pageCheck
     }
     ,

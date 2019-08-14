@@ -6,7 +6,7 @@ Vue.use(Vuex)
 export default new Vuex.Store({
   state: {
     token: localStorage.getItem('token'),
-    name : '손',
+    name : localStorage.getItem('name') ? localStorage.getItem('name') : '손',
     sb : {
       act : false,
       msg : '',

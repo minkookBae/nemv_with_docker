@@ -30,7 +30,7 @@
             disable-initial-sort>
             <template slot="items" slot-scope="props">
               <tr>
-                <td :class="headers[0].class"><a @click="read(props.item)">{{ props.item.title }}</a>{{ props.item.labels.slice(0,).toString().replace(',',' ') }}</td>
+                <td :class="headers[0].class"><a @click="move(props.item)">{{ props.item.title }}</a>{{ props.item.labels.slice(0,).toString().replace(',',' ') }}</td>
                 <td :class="headers[1].class">{{ props.item.labels.slice(0,).toString().replace(',',' ') }}</td>
                 <td :class="headers[2].class">{{ props.item._user ? props.item._user.name : '손님' }}</td>
                 <td :class="headers[3].class">{{ props.item.cnt.view }}</td>
@@ -179,7 +179,7 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-        <v-dialog width="400" v-model="commentDialog">
+    <v-dialog width="400" v-model="commentDialog">
       <v-card>
         <v-card-text>
           <v-text-field
@@ -205,10 +205,8 @@
 
 
 <script>
-import boardCard from '@/components/manage/boardCard'
 import moment from 'moment'
 export default {
-  components: { boardCard },
   data () {
     return {
       board: {
@@ -230,7 +228,7 @@ export default {
         { text: '글쓴이', value: '_user', sortable: false },
         { text: '조회수', value: 'cnt.view', sortable: true },
         { text: '추천', value: 'cnt.like', sortable: true },
-        { text: '댓글', value: 'comments', sortable: true, class : 'font-size24'},
+        { text: '댓글', value: 'comments', sortable: true },
         { text: '날짜', value: '_id', sortable: true, class: 'hidden-sm-and-down' }
       ],
       loading: false,
@@ -477,12 +475,9 @@ export default {
           if (!e.response) this.$store.commit('pop', { msg: e.message, color: 'warning' })
         })    
     },
+    move(obj){
+      this.$router.push({path : `/issue/`+obj._id})
+    }
   }
 }
 </script>
-
-<style>
-  .font-size24{
-    font-size: 12px !important;
-  }
-</style>
