@@ -64,7 +64,7 @@
     >
       <v-icon>add</v-icon>
     </v-btn>
-    <v-dialog v-model="dialog" persistent max-width="600px">
+    <v-dialog v-model="dialog" persistent max-width="700px">
       <v-card light v-if="!dlMode">
         <v-card-title>
           <span class="headline">{{selArticle.title}}</span>
@@ -166,6 +166,8 @@
               <v-flex xs12>
                 <editor
                   required
+                  previewStyle = "tab"
+                  mode = "markdown"
                   v-model="form.content"
                 />
               </v-flex>
@@ -223,13 +225,13 @@ export default {
       },
       response : '',
       headers: [
-        { text: '제목', value: 'title', sortable: true, align: 'left' },
-        { text: '라벨', value: 'labels', sortable : true },
-        { text: '글쓴이', value: '_user', sortable: false },
-        { text: '조회수', value: 'cnt.view', sortable: true },
-        { text: '추천', value: 'cnt.like', sortable: true },
-        { text: '댓글', value: 'comments', sortable: true },
-        { text: '날짜', value: '_id', sortable: true, class: 'hidden-sm-and-down' }
+        { text: '제목', value: 'title', sortable: true, align: 'left', width:'20%'},
+        { text: '라벨', value: 'labels', sortable : true ,width:'1%'},
+        { text: '글쓴이', value: '_user', sortable: false ,width:'1%'},
+        { text: '조회수', value: 'cnt.view', sortable: true ,width:'1%'},
+        { text: '추천', value: 'cnt.like', sortable: true ,width:'1%'},
+        { text: '댓글', value: 'comments', sortable: true ,width:'1%'},
+        { text: '날짜', value: '_id', sortable: true, class: 'hidden-sm-and-down' ,width:'20%'}
       ],
       loading: false,
       itemTotal: 0,

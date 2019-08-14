@@ -23,7 +23,8 @@
                 <template v-for="(item, i) in issue._comments">
                     <v-card :key="i" light>
                         <v-card-text class="title_area">
-                            <b>{{item._user.name}}</b>님의 코멘트<span style="font-size:0.8rem;">{{id2date_2(item._id)}}</span>
+                            <v-spacer></v-spacer>
+                            <div><b>{{item._user.name}}</b>님의 코멘트<span style="font-size:0.8rem; float:right;">{{id2date_2(item._id)}}</span></div>
                         </v-card-text>
                     </v-card>
                     <v-card :key="i+1000" light>

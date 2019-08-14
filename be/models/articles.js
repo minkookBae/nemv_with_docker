@@ -2,7 +2,7 @@ const mongoose = require('mongoose')
 
 mongoose.set('useCreateIndex', true)
 const articleSchema = new mongoose.Schema({
-  article_num : {type : Number , default : '', index : true},
+  article_num : {type : Number , default : 1, index : true},
   title: { type: String, default: '', index: true },
   content: { type: String, default: '' },
   cnt: {
