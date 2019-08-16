@@ -6,9 +6,21 @@
                     <v-card light>
                         <v-card-title class="headline">
                             <span style=""><b>{{issue.title}}</b></span>
-                            {{issue.labels ? issue.labels.slice(0,).toString().replace(',',' ') : ''}}
+                            <v-spacer></v-spacer>
+                            <v-tooltip bottom class="tooltip-padding5">
+                                <span style="float:right;" slot="activator"><v-icon>label</v-icon></span>
+                                <span>라벨을 추가합니다</span>
+                            </v-tooltip>
+                            <v-tooltip bottom class="tooltip-padding5">
+                                <span style="float:right;" slot="activator"><v-icon @click.native="dialog = true, modDialog()">create</v-icon></span>
+                                <span>이슈를 수정합니다</span>
+                            </v-tooltip>
+                            <v-tooltip bottom class="tooltip-padding5">
+                                <span style="float:right;" slot="activator"><v-icon @click.native="dialog = true, ca=true">delete_forever</v-icon></span>
+                                <span>이슈를 삭제합니다</span>
+                            </v-tooltip>
                         </v-card-title>
-                        <v-card-text style="padding-top : 0px; padding-bottom:0px;">
+                        <v-card-text style="padding-top : 0px; padding-bottom:0px;" :class="$vuetify.breakpoint.xs ? 'xs_text': ''">
                             <b>{{issue._user ? issue._user.name : '손님'}}</b> 님께서
                             <b>{{id2date_2(issue._id)}}</b> 에 이슈를 제시하셨습니다.
                             코멘트 : <b>{{issue.comments_count}}</b>개
@@ -24,6 +36,26 @@
                             <viewer v-model="issue.content" />
 
                         </v-card-text>
+                        <v-card>
+                            <template>
+                                <v-btn icon color="pink">
+                                    <v-icon color="white">favorite</v-icon>
+                                </v-btn>
+                                <template>{{issue.cnt.like}}</template>
+                            </template>
+                            <!-- 좋아요 -->
+
+                            <template>
+                                <v-btn icon color="blue">
+                                    <v-icon color="white">thumb_down_alt</v-icon>
+                                </v-btn>
+                                <template>{{issue.cnt.dislike}}</template>
+                            </template>
+
+                            <!-- 싫어요 -->
+                        </v-card>
+
+                        
                     </v-card>
                 </template>
                 <!-- 이슈 내용 렌더링 -->
@@ -60,11 +92,111 @@
                     </v-card>
                 </template>
             </v-flex>
-            <v-flex>
+            
+            <!-- 도움 주신 분, 관련 이슈 렌더링 -->
+            <v-flex xs12 md3>
                 <v-card>
+                    <v-card-title>도움 주신 분</v-card-title>
+                    <template v-for="(item, i) in help_list_name">
+                    <v-card :key="i" light>
+                        <v-card-text class="comment_help_area">
+                            <div><b>{{item}}</b></div>
+                        </v-card-text>
+                    </v-card>                        
+                    </template>
+                </v-card>
+                <v-card>
+                    <v-card-title>관련 이슈</v-card-title>
+                    <v-card>
+                        <v-card-text class="label_area">
+                            000과 관련
+                        </v-card-text>
+                    </v-card>
                 </v-card>
             </v-flex>
         </v-layout>
+
+<!-- dialog창 -->
+
+        <v-dialog v-model="dialog" persistent max-width="700">
+            <v-card light v-if="!dlMode">
+                <v-card-title>
+                    <span class="headline">{{issue.title}}</span>
+                    <v-spacer></v-spacer>
+                    <v-btn
+                        icon
+                        @click="dialog=!dialog, ca=false"
+                    >
+                        <v-icon>clear</v-icon>
+                    </v-btn>
+
+                </v-card-title>
+                <v-card-text style="padding:0px 16px">
+                    <span class="headline">{{issue.labels ? issue.labels.slice(0,).toString().replace(',',' ') : ''}}</span>
+                </v-card-text>
+                <v-card-text>
+                    <viewer v-model="issue.content" />
+                </v-card-text>
+                <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn color="warning darken-1" flat @click.native="modDialog()">수정</v-btn>
+                    <v-btn color="error darken-1" flat @click.native="ca=true">삭제</v-btn>
+                    <v-btn color="success darken-1" flat @click.native="dialog = false, ca = false">닫기</v-btn>
+                </v-card-actions>
+
+                <v-card-text v-if="ca">
+                <v-alert v-model="ca" type="warning">
+                    <h4>정말 진행 하시겠습니까?</h4>
+                    <v-btn color="error" @click="del(), ca=false">확인</v-btn>
+                    <v-btn color="secondary" @click="dialog = false, ca=false">취소</v-btn>
+                </v-alert>
+                </v-card-text>
+
+            </v-card>
+
+            <v-card light v-else-if="dlMode === 2">
+                <v-card-title>
+                <span class="headline">이슈 수정</span>
+                <v-spacer></v-spacer>
+                <v-btn
+                    icon
+                    @click="dialog=!dialog, dlMode = 0"
+                >
+                    <v-icon>clear</v-icon>
+                </v-btn>
+                </v-card-title>
+                <v-card-text>
+                <v-container grid-list-md style="padding:0px;">
+                    <v-layout wrap>
+                    <v-flex xs12>
+                        <v-text-field
+                        label="제목"
+                        persistent-hint
+                        required
+                        v-model="form.title"
+                        ></v-text-field>
+                    </v-flex>
+                    <v-flex xs12>
+                        <editor
+                        required
+                        previewStyle = "tab"
+                        mode = "markdown"
+                        v-model="form.content"
+                        />
+                    </v-flex>
+                    </v-layout>
+                </v-container>
+                </v-card-text>
+                <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn color="green darken-1" flat @click="mod()">확인</v-btn>
+                <v-btn color="red darken-1" flat @click.native="dialog = false, dlMode = 0">취소</v-btn>
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
+
+
+
     </v-container>
 </template>
 <script>
@@ -74,10 +206,24 @@ export default {
     data () {
         return {
             dlMode : 0,
-            issue : {},
+            issue : {
+                cnt : {
+                    view : 0,
+                    like : 0,
+                    dislike : 0
+                }
+
+            },
             formComment : {
-            }
-            
+            },
+            form: {
+                title: '',
+                content: ''
+            },
+            dialog : false,
+            ca : false,
+            help_list : {},
+            help_list_name : []
         }
     },
     mounted(){
@@ -91,11 +237,20 @@ export default {
                 if (!data.success) throw new Error(data.msg)
                 this.dlMode = 0
                 this.issue = data.d
+                this.help_list = data.d._comments
+                this.set_helper()
                 })
                 .catch((e) => {
                 if (!e.response) this.$store.commit('pop', { msg: e.message, color: 'warning' })
                 })
         },
+        set_helper(){
+            for(var i = 0; i < this.help_list.length ; i++){
+                if(!this.help_list_name.includes(this.help_list[i]._user.name))
+                    this.help_list_name.push(this.help_list[i]._user.name)
+            }
+        }
+        ,
         id2date (val) {
             moment.locale('ko')
             if (!val) return ''
@@ -127,7 +282,57 @@ export default {
                 .catch((e) => {
                 if (!e.response) this.$store.commit('pop', { msg: e.message, color: 'warning' })
                 })
-        }
+        },
+        mod () {
+            if (!this.form.title) return this.$store.commit('pop', { msg: '제목을 작성해주세요', color: 'warning' })
+            if (!this.form.content) return this.$store.commit('pop', { msg: '내용을 작성해주세요', color: 'warning' })
+            if (this.issue.title === this.form.title && this.issue.content === this.form.content)
+                return this.$store.commit('pop', { msg: '변경된 내용이 없습니다', color: 'warning' })
+            this.$axios.put(`article/${this.issue._id}`, this.form)
+                .then(({ data }) => {
+                this.dialog = false
+                if (!data.success) throw new Error(data.msg)
+                this.issue.title = data.d.title
+                this.issue.content = data.d.content
+                this.dialog = false;
+                this.dlMode = 0;
+                this.ca = false;
+                // this.$router.go()
+                // this.list()
+                })
+                .catch((e) => {
+                if (!e.response) this.$store.commit('pop', { msg: e.message, color: 'warning' })
+                this.dialog = false;
+                this.dlMode = 0;
+                this.ca = false;
+                
+                })
+            },
+        del () {
+            this.$axios.delete(`article/${this.issue._id}`)
+                .then(({ data }) => {
+                this.dialog = false
+                if (!data.success) throw new Error(data.msg)
+                this.$router.go(-1)
+                })
+                .catch((e) => {
+                if (!e.response) {
+                    this.$store.commit('pop', { msg: e.message, color: 'warning' })
+                    }
+                else{
+                    this.dialog = false;
+                    this.ca = false;
+                    this.dlMode = 0;
+                }
+                })
+        },
+        modDialog () {
+            this.dlMode = 2
+            this.form = {
+                title: this.issue.title,
+                content: this.issue.content
+            }
+        },
     }
 
 }
@@ -136,5 +341,19 @@ export default {
 <style>
     .title_area {
         background-color : whitesmoke
+    }
+
+    .tooltip-padding5 {
+        padding : 5px;
+    }
+
+    .xs_text {
+        font-size: 0.8rem;
+    }
+    .comment_help_area {
+        background-color: lavenderblush
+    }
+    .label_area{
+        background-color: aliceblue
     }
 </style>

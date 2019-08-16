@@ -30,13 +30,21 @@
             disable-initial-sort>
             <template slot="items" slot-scope="props">
               <tr>
-                <td :class="headers[0].class"><a @click="move(props.item)">{{ props.item.title }}</a>{{ props.item.labels.slice(0,).toString().replace(',',' ') }}</td>
-                <td :class="headers[1].class">{{ props.item.labels.slice(0,).toString().replace(',',' ') }}</td>
-                <td :class="headers[2].class">{{ props.item._user ? props.item._user.name : '손님' }}</td>
-                <td :class="headers[3].class">{{ props.item.cnt.view }}</td>
-                <td :class="headers[4].class">{{ props.item.cnt.like }}</td>
-                <td :class="headers[5].class">{{props.item.comments_count ? props.item.comments_count : ''}}</td>
-                <td :class="headers[6].class">{{ id2date(props.item._id)}}</td>
+                <td :class="headers[0].class">
+                  <template v-if="props.item.is_open">
+                    <v-icon color="green">error_outline</v-icon>
+                  </template>
+                  <template v-else>
+                    <v-icon color="red">error</v-icon>
+                  </template>
+                </td>
+                <td :class="headers[1].class"><a @click="move(props.item)">{{ props.item.title }}</a>{{ props.item.labels.slice(0,).toString().replace(',',' ') }}</td>
+                <td :class="headers[2].class">{{ props.item.labels.slice(0,).toString().replace(',',' ') }}</td>
+                <td :class="headers[3].class">{{ props.item._user ? props.item._user.name : '손님' }}</td>
+                <td :class="headers[4].class">{{ props.item.cnt.view }}</td>
+                <td :class="headers[5].class">{{ props.item.cnt.like }}</td>
+                <td :class="headers[6].class">{{props.item.comments_count ? (props.item.comments_count) : ''}}</td>
+                <td :class="headers[7].class">{{ id2date(props.item._id)}}</td>
               </tr>
             </template>
             <template slot="no-data">
@@ -64,7 +72,7 @@
     >
       <v-icon>add</v-icon>
     </v-btn>
-    <v-dialog v-model="dialog" persistent max-width="700px">
+    <v-dialog v-model="dialog" persistent max-width="700">
       <v-card light v-if="!dlMode">
         <v-card-title>
           <span class="headline">{{selArticle.title}}</span>
@@ -225,13 +233,14 @@ export default {
       },
       response : '',
       headers: [
+        { text: '', value: 'open', sortable : false, width:'1%'},
         { text: '제목', value: 'title', sortable: true, align: 'left', width:'20%'},
-        { text: '라벨', value: 'labels', sortable : true ,width:'1%'},
+        { text: '', value: 'labels', sortable : false ,width:'1%'},
         { text: '글쓴이', value: '_user', sortable: false ,width:'1%'},
         { text: '조회수', value: 'cnt.view', sortable: true ,width:'1%'},
         { text: '추천', value: 'cnt.like', sortable: true ,width:'1%'},
-        { text: '댓글', value: 'comments', sortable: true ,width:'1%'},
-        { text: '날짜', value: '_id', sortable: true, class: 'hidden-sm-and-down' ,width:'20%'}
+        { text: '댓글', value: 'comments_count', sortable: true ,width:'1%'},
+        { text: '날짜', value: '_id', sortable: true, class: 'hidden-sm-and-down' ,width:'1%'}
       ],
       loading: false,
       itemTotal: 0,
