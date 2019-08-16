@@ -9,7 +9,7 @@ router.post('/', function(req, res, next) {
   Page.findOne({ name })
     .then((r) => {
       if (!r) {
-        if (req.user.lv) throw new Error(`페이지 ${name} 생성이 안되었습니다`)
+        // if (req.user.lv) throw new Error(`페이지 ${name} 생성이 안되었습니다`)
         return Page.create({ name })
       }
       if (r.lv < req.user.lv) throw new Error(`페이지 ${name} 이용 자격이 없습니다.`)

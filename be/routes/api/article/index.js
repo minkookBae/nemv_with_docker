@@ -49,7 +49,7 @@ router.get('/read/:_id', (req, res, next) => {
 
   let atc = {}
   
-  Article.findByIdAndUpdate(_id, { $inc: { 'cnt.view': 1 } }, { new: true }).lean()
+  Article.findByIdAndUpdate(_id, { $inc: { 'cnt.view': 1 } }, { new: true }).populate({path : '_user', select : 'name'}).lean()
     .then(r => {
       if(!r) throw new Error('잘못된 게시판입니다.')
       atc = r

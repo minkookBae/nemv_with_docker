@@ -2,16 +2,24 @@
     <v-container fluid :grid-list-md="!$vuetify.breakpoint.xs" :class="$vuetify.breakpoint.xs ? 'pa-0' : ''">
         <v-layout row wrap>
             <v-flex xs12 md9>
+                <template>
+                    <v-card light>
+                        <v-card-title class="headline">
+                            <span style=""><b>{{issue.title}}</b></span>
+                            {{issue.labels ? issue.labels.slice(0,).toString().replace(',',' ') : ''}}
+                        </v-card-title>
+                        <v-card-text style="padding-top : 0px; padding-bottom:0px;">
+                            <b>{{issue._user ? issue._user.name : '손님'}}</b> 님께서
+                            <b>{{id2date_2(issue._id)}}</b> 에 이슈를 제시하셨습니다.
+                            코멘트 : <b>{{issue.comments_count}}</b>개
+                            
+                            
+                        </v-card-text>
+                    </v-card>
+                </template>
                 <template> 
                     <!-- 이슈 내용 시작 -->
                     <v-card light>
-                        <v-card-title class="headline title_area">
-                            {{issue.title}}
-                            {{issue.labels ? issue.labels.slice(0,).toString().replace(',',' ') : ''}}
-                            <v-spacer></v-spacer>
-                            <div style="font-size:0.8rem;">{{id2date(issue._id)}}</div>
-
-                        </v-card-title>
                         <v-card-text>
                             <viewer v-model="issue.content" />
 
@@ -24,7 +32,7 @@
                     <v-card :key="i" light>
                         <v-card-text class="title_area">
                             <v-spacer></v-spacer>
-                            <div><b>{{item._user.name}}</b>님의 코멘트<span style="font-size:0.8rem; float:right;">{{id2date_2(item._id)}}</span></div>
+                            <div><b>{{item._user ? item._user.name : '손님 '}}</b>님의 코멘트<span style="font-size:0.8rem; float:right;">{{id2date_2(item._id)}}</span></div>
                         </v-card-text>
                     </v-card>
                     <v-card :key="i+1000" light>
@@ -83,7 +91,6 @@ export default {
                 if (!data.success) throw new Error(data.msg)
                 this.dlMode = 0
                 this.issue = data.d
-                console.log(this.issue)
                 })
                 .catch((e) => {
                 if (!e.response) this.$store.commit('pop', { msg: e.message, color: 'warning' })
