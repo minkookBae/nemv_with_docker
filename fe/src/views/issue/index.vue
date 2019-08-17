@@ -234,7 +234,11 @@ export default {
         read (issue_id) {
             this.$axios.get(`article/read/${issue_id}`)
                 .then(({ data }) => {
-                if (!data.success) throw new Error(data.msg)
+                if (!data.success){
+                    this.$router.push('/e404')
+                    throw new Error(404,'Page not found')
+                    
+                    }
                 this.dlMode = 0
                 this.issue = data.d
                 this.help_list = data.d._comments
