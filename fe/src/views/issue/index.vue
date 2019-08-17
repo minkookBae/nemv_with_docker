@@ -38,18 +38,18 @@
                         </v-card-text>
                         <v-card>
                             <template>
-                                <v-btn icon color="pink">
+                                <v-btn icon color="pink" @click="like()">
                                     <v-icon color="white">favorite</v-icon>
                                 </v-btn>
-                                <template>{{issue.cnt.like}}</template>
+                                <template>{{issue.like_member.length}}</template>
                             </template>
                             <!-- 좋아요 -->
 
                             <template>
-                                <v-btn icon color="blue">
+                                <v-btn icon color="blue" @click="dislike()">
                                     <v-icon color="white">thumb_down_alt</v-icon>
                                 </v-btn>
-                                <template>{{issue.cnt.dislike}}</template>
+                                <template>{{issue.dislike_member.length}}</template>
                             </template>
 
                             <!-- 싫어요 -->
@@ -209,9 +209,9 @@ export default {
             issue : {
                 cnt : {
                     view : 0,
-                    like : 0,
-                    dislike : 0
-                }
+                },
+                like_member : [],
+                dislike_member : []
 
             },
             formComment : {
@@ -333,6 +333,27 @@ export default {
                 content: this.issue.content
             }
         },
+        like () {
+            this.$axios.put(`article/like/${this.issue._id}`)
+            .then((r) => {
+                this.read(this.issue._id)
+
+            })
+            .catch((e) =>{
+                this.$store.commit('pop', {msg : "손님은 좋아요 표시를 할 수 없습니다.", color : "warning"})
+            })
+        },
+        dislike () {
+            this.$axios.put(`article/dislike/${this.issue._id}`)
+            .then((r) => {
+                this.read(this.issue._id)
+
+            })
+            .catch((e) =>{
+                this.$store.commit('pop', {msg : "손님은 싫어요 표시를 할 수 없습니다.", color : "warning"})
+
+            })
+        }
     }
 
 }

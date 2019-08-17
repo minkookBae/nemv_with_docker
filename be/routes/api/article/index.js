@@ -179,6 +179,70 @@ router.delete('/:_id', (req, res, next) => {
     }
 })
 
+router.put('/like/:_id', (req, res, next) => {
+  if (!req.user._id) throw createError(403, "손님은 좋아요 표시를 할 수 없습니다")
+
+  const _id = req.params._id
+  const user_id = req.user._id
+  Article.find({"_id" : _id})
+  .then((r) =>{
+    if(!r) throw new Error("게시글이 없습니다.")
+
+    if(!r[0].like_member.includes(user_id) && !r[0].dislike_member.includes(user_id) )
+      return Article.findByIdAndUpdate({_id : _id}, {$push : {like_member : user_id}}, {new : true})
+    else if(r[0].dislike_member.includes(user_id) && !r[0].like_member.includes(user_id)){
+      Article.findByIdAndUpdate({_id : _id}, {$pull : {dislike_member : user_id}}, {new : true})
+      .then(r=>{return Article.findByIdAndUpdate({_id : _id}, {$push : {like_member : user_id}}, {new : true})})
+      //싫어요 된게 있다면 싫어요 제거하고 좋아요로 이동
+    }
+    else if(r[0].like_member.includes(user_id) && !r[0].dislike_member.includes(user_id)){
+      return Article.findByIdAndUpdate({_id : _id}, {$pull : {like_member : user_id}}, {new : true})
+ 
+    }
+  })
+  .then(r=>{
+    res.send({ success : true, token : req.token})
+  })
+  .catch(e =>{
+    res.send({ success : false, msg : e.message })
+  })
+  
+})
+// 좋아요 구현
+
+router.put('/dislike/:_id', (req, res, next) => {
+  if (!req.user._id) throw createError(403, "손님은 싫어요 표시를 할 수 없습니다")
+
+  const _id = req.params._id
+  const user_id = req.user._id
+  var user_id_array = []
+  Article.find({"_id" : _id})
+  .then((r) =>{
+    if(!r) throw new Error("게시글이 없습니다.")
+
+    if(!r[0].dislike_member.includes(user_id) && !r[0].like_member.includes(user_id))
+      return Article.findByIdAndUpdate({_id : _id}, {$push : {dislike_member : user_id}}, {new : true})
+    else if(r[0].like_member.includes(user_id) && !r[0].dislike_member.includes(user_id)){
+      Article.findByIdAndUpdate({_id : _id}, {$pull : {like_member : user_id}}, {new : true})
+      .then(r=>{return Article.findByIdAndUpdate({_id : _id}, {$push : {dislike_member : user_id}}, {new : true})})
+      // 좋아요 된게 있다면 좋아요를 제거하고 싫어요에 추가
+    }
+    else if(r[0].dislike_member.includes(user_id) && !r[0].like_member.includes(user_id)){
+      return Article.findByIdAndUpdate({_id : _id}, {$pull : {dislike_member : user_id}}, {new : true})
+ 
+    }
+  })
+  .then(r=>{
+    res.send({ success : true, token : req.token})
+  })
+  .catch(e =>{
+    res.send({ success : false, msg : e.message })
+  })
+  
+})
+// 싫어요 구현
+
+
 router.all('*', function(req, res, next) {
   next(createError(404, '그런 api 없어'));
 });

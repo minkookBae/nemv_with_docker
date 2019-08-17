@@ -44,7 +44,7 @@ module.exports = {
 
 ## how to start
 ### before start, you should make configure files.
-### after start, you should modify pages level.. (page default lv value : 0)
+
 
 
 ### for docker
@@ -73,16 +73,16 @@ docker-compose up -d  //for background
 cd nemv_with_docker
 ```
 ```
-cd fe && yarn && cd../be && yarn
+cd fe && yarn && cd ../be && yarn
 ```
 ```
 mongod
 ```
 ```
-yarn dev2
+(new prompt)yarn dev2
 ```
 ```
-yarn serve2
+(new prompt)yarn serve2
 ```
 
 
@@ -93,3 +93,17 @@ yarn serve2
 [http://YOUR_HOST_URL:8080] : docker
 <br>
 [http://localhost:8080] : local
+
+
+## TODO List
+- [x] 회원가입
+- [x] 로그인(jwt를 이용한)
+- [x] 관리페이지 구현(fkkmemi님의 예제)
+- [x] 이슈 게시판 구현
+- [x] 도움 주신 분 구현
+- [x] 이슈 상세 페이지 구현
+- [x] 이슈 댓글 구현
+- [ ] 좋아요, 싫어요 구현
+- [ ] 라벨링 구현
+- [ ] 필터링 구현
+- [ ] 게시판 정렬 구현

@@ -7,14 +7,13 @@ const articleSchema = new mongoose.Schema({
   title: { type: String, default: '', index: true },
   content: { type: String, default: '' },
   cnt: {
-    view: { type: Number, default: 0 },
-    like: { type: Number, default: 0 },
-    dislike : { type: Number, default: 0}
+    view: { type: Number, default: 0 }
   },
   ip: { type: String, default: '' },
   comments_count : {type : Number, default : 0},
-  labels : [String],
-  like_member : [String],
+  labels : [],
+  like_member : [],
+  dislike_member : [],
   is_reference : {type : Boolean, default : false},
   _user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', index: true },
   _board: { type: mongoose.Schema.Types.ObjectId, ref: 'Board', index: true }

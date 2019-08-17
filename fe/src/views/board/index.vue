@@ -42,7 +42,7 @@
                 <td :class="headers[2].class">{{ props.item.labels.slice(0,).toString().replace(',',' ') }}</td>
                 <td :class="headers[3].class">{{ props.item._user ? props.item._user.name : '손님' }}</td>
                 <td :class="headers[4].class">{{ props.item.cnt.view }}</td>
-                <td :class="headers[5].class">{{ props.item.cnt.like }}</td>
+                <td :class="headers[5].class">{{ props.item.like_member.length }}</td>
                 <td :class="headers[6].class">{{props.item.comments_count ? (props.item.comments_count) : ''}}</td>
                 <td :class="headers[7].class">{{ id2date(props.item._id)}}</td>
               </tr>
