@@ -61,17 +61,27 @@
                 <!-- 이슈 내용 렌더링 -->
                 <v-spacer><br></v-spacer>
                 <template v-for="(item, i) in issue._comments">
-                    <v-card :key="i" light>
-                        <v-card-text class="title_area">
-                            <v-spacer></v-spacer>
-                            <div><b>{{item._user ? item._user.name : '손님 '}}</b>님의 코멘트<span style="font-size:0.8rem; float:right;">{{id2date_2(item._id)}}</span></div>
-                        </v-card-text>
-                    </v-card>
-                    <v-card :key="i+1000" light>
-                        <v-card-text>
-                            <viewer v-model="item.content" />
-                        </v-card-text>
-                    </v-card>
+                    <template v-if="!item.is_statusChange">
+                        <v-card :key="i" light>
+                            <v-card-text class="title_area">
+                                <v-spacer></v-spacer>
+                                <div><b>{{item._user ? item._user.name : '손님 '}}</b>님의 코멘트<span style="font-size:0.8rem; float:right;">{{id2date_2(item._id)}}</span></div>
+                            </v-card-text>
+                        </v-card>
+                        <v-card :key="i+1000" light>
+                            <v-card-text>
+                                <viewer v-model="item.content" />
+                            </v-card-text>
+                        </v-card>
+                    </template>
+                    <template v-else>
+                        <v-card :key="i" light>
+                            <v-card-text>
+                                <v-spacer></v-spacer>
+                                <div><b>{{item._user.name}}</b>님이 이슈 상태를 변경하였습니다<span style="font-size:0.8rem; float:right;">{{id2date_2(item._id)}}</span></div>
+                            </v-card-text>
+                        </v-card>
+                    </template>
                     <br :key = "i+2000">
                 </template>
                 <!-- 댓글 리스트 렌더링 -->
@@ -83,6 +93,7 @@
                         <editor
                         required
                         v-model="formComment.content"
+                        mode="wysiwyg"
                         height = "200px"
                         />
                         
@@ -91,12 +102,12 @@
                             <template v-if="issue.is_open">
                                 <template v-if="formComment.content !== ''">
                                     <v-btn class="ma-1" @click="issueStatusChange_with_comment()">코멘트와 함께 이슈 닫기
-                                        <v-icon color="red" right>block</v-icon>
+                                        <v-icon color="green" right>check_circle</v-icon>
                                     </v-btn>
                                 </template>
                                 <template v-else>
                                     <v-btn class="ma-1" @click="issueStatusChange()">이슈 닫기
-                                        <v-icon color="red" right>block</v-icon>
+                                        <v-icon color="green" right>check_circle</v-icon>
                                     </v-btn>                                    
                                 </template>
                             </template>
@@ -104,12 +115,12 @@
                             <template v-else>
                                 <template v-if="formComment.content !== ''">
                                     <v-btn class="ma-1" @click="issueStatusChange_with_comment()">코멘트와 함께 이슈 열기
-                                        <v-icon color="green" right>error</v-icon>
+                                        <v-icon color="orange" right>help</v-icon>
                                     </v-btn>
                                 </template>
                                 <template v-else>
                                     <v-btn class="ma-1" @click="issueStatusChange()">이슈 열기
-                                        <v-icon color="green" right>error</v-icon>
+                                        <v-icon color="orange" right>help</v-icon>
                                     </v-btn>                                    
                                 </template>                       
                             </template>
@@ -209,7 +220,7 @@
                         <editor
                         required
                         previewStyle = "tab"
-                        mode = "markdown"
+                        mode = "wysiwyg"
                         v-model="form.content"
                         />
                     </v-flex>
@@ -395,14 +406,25 @@ export default {
                 this.read(this.issue._id)
             })
             .catch(e =>{
-                this.$store.commit('pop', {msg : e.message, color : "warning"})
+                this.$store.commit('pop', {msg : "권한이 없습니다.", color : "warning"})
             })
         },
 
         // 코멘트와 함께 저장함.
         async issueStatusChange_with_comment() {
             await this.issueStatusChange()
-            await this.addComment()
+            await this.issueStatusChange_log()
+        },
+
+        issueStatusChange_log(){
+            this.$axios.post(`comment/status/${this.issue._id}`, this.formComment)
+            .then((r)=>{
+                this.formComment.content = ''
+                this.read(this.issue._id)
+            })
+            .catch((e)=>{
+                this.$store.commit('pop', {msg : "권한이 없습니다.", color : "warning"})
+            })
         }
 
     }

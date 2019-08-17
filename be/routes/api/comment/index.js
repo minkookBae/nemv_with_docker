@@ -10,29 +10,29 @@ const cfg = require('../../../config')
   if (!_article) throw createError(400, '게시물이 선택되지 않았습니다')
   const { content } = req.body
 
-   if (!content) throw createError(400, '내용이 없습니다')
+  if (!content) throw createError(400, '내용이 없습니다')
 //   if (!response) throw createError(400, '로봇 검증이 없습니다')
 
-    Article.findByIdAndUpdate(_article, {$inc : {comments_count : 1}}, {new : true})
-    .then(r => {
-    if (!r) throw createError(400, '잘못된 게시물입니다')
-    // if (r.lv < req.user.lv) throw createError(403, '권한이 없습니다')
-    const cmt = {
-        content,
-        _article,
-        ip: '1.1.1.1',//req.ip,
-        _user: null
-    }
-    if (req.user._id) cmt._user = req.user._id
-    return  Comment.create(cmt)
-    })
-    .then(r => {
-    if (!r) throw new Error('게시물이 생성되지 않았습니다')
-    res.send({ success: true, d: r, token: req.token })
-    })
-    .catch(e => {
-    res.send({ success: false, msg: e.message })
-    })
+  Article.findByIdAndUpdate(_article, {$inc : {comments_count : 1}}, {new : true})
+  .then(r => {
+  if (!r) throw createError(400, '잘못된 게시물입니다')
+  // if (r.lv < req.user.lv) throw createError(403, '권한이 없습니다')
+  const cmt = {
+      content,
+      _article,
+      ip: '1.1.1.1',//req.ip,
+      _user: null
+  }
+  if (req.user._id) cmt._user = req.user._id
+  return  Comment.create(cmt)
+  })
+  .then(r => {
+  if (!r) throw new Error('게시물이 생성되지 않았습니다')
+  res.send({ success: true, d: r, token: req.token })
+  })
+  .catch(e => {
+  res.send({ success: false, msg: e.message })
+  })
 
 })
 
@@ -90,5 +90,43 @@ const cfg = require('../../../config')
       res.send({ success: false, msg: e.message })
     })
 })
+
+router.post('/status/:_article', (req, res, next) => {
+  const _article = req.params._article
+  if (!_article) throw createError(400, '게시물이 선택되지 않았습니다')
+  const { content } = req.body
+
+  if (!content) throw createError(400, '내용이 없습니다')
+
+  Article.findByIdAndUpdate(_article, {new : true})
+  .then(r => {
+  if (!r) throw createError(400, '잘못된 게시물입니다')
+  // if (r.lv < req.user.lv) throw createError(403, '권한이 없습니다')
+  if(req.user._id !== r._user._id.toString()){
+    if(req.user.lv !== 0){
+      throw createError(403, "권한이 없습니다")
+    }
+  }
+    
+  const cmt = {
+      content,
+      is_statusChange : true,
+      _article,
+      ip: '1.1.1.1',//req.ip,
+      _user: req.user._id
+  }
+  console.log(cmt)
+  return  Comment.create(cmt)
+  })
+  .then(r => {
+  if (!r) throw new Error('게시물이 생성되지 않았습니다')
+  res.send({ success: true, d: r, token: req.token })
+  })
+  .catch(e => {
+  res.send({ success: false, msg: e.message })
+  })
+
+})
+
 
  module.exports = router;

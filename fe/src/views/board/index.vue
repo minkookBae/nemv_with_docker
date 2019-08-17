@@ -32,10 +32,10 @@
               <tr>
                 <td :class="headers[0].class">
                   <template v-if="props.item.is_open">
-                    <v-icon color="green">error_outline</v-icon>
+                    <v-icon color="orange">help</v-icon>
                   </template>
                   <template v-else>
-                    <v-icon color="red">error</v-icon>
+                    <v-icon color="green">check_circle</v-icon>
                   </template>
                 </td>
                 <td :class="headers[1].class"><a @click="move(props.item)">{{ props.item.title }}</a>{{ props.item.labels.slice(0,).toString().replace(',',' ') }}</td>
@@ -175,7 +175,7 @@
                 <editor
                   required
                   previewStyle = "tab"
-                  mode = "markdown"
+                  mode = "wysiwyg"
                   v-model="form.content"
                 />
               </v-flex>
@@ -439,12 +439,13 @@ export default {
       var time = moment(parseInt(val.substring(0, 8), 16) * 1000)
       var diff = moment().diff(moment(time))
       
-      if(diff > 604800000) //일주일
-        return time.format("YYYY년 MM월 DD일")
-      else{
-        return moment(time).startOf('minute').fromNow() //일주일 이하면 minute로 시간차 뿌림
-      }
+      // if(diff > 604800000) //일주일
+      //   return time.format("YYYY년 MM월 DD일")
+      // else{
+      //   return moment(time).startOf('minute').fromNow() //일주일 이하면 minute로 시간차 뿌림
+      // }
 
+      return time.format("YYYY년 MM월 DD일")
     },
     delay () {
       clearTimeout(this.timeout)
