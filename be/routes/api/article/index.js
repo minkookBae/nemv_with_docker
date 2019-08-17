@@ -242,6 +242,49 @@ router.put('/dislike/:_id', (req, res, next) => {
 })
 // 싫어요 구현
 
+router.put('/status/:_id', (req, res, next) => {
+  if (!req.user._id) throw createError(403, "게시물 수정 권한이 없습니다.")
+  const _id = req.params._id
+
+  if(req.user.lv === 0){
+    Article.findById(_id)
+    .then(r => {
+      if (!r) throw new Error('게시물이 존재하지 않습니다')
+      return Article.findByIdAndUpdate(_id, {is_open : !req.body.is_open}, { new: true })
+    })
+    .then(r => {
+      res.send({ success: true, token: req.token })
+    })
+    .catch(e => {
+      res.send({ success: false, msg: e.message })
+    })    
+  }
+  //관리자
+
+  else{
+    Article.findById(_id).populate('_user', 'lv')
+      .then(r => {
+        if (!r) throw new Error('게시물이 존재하지 않습니다')
+        if (!r._user){
+          throw new Error('손님 게시물은 수정이 안됩니다')
+        }
+        else{
+          if (r._user.toString() !== req.user._id) {
+            if (r._user.lv < req.user.lv) throw new Error('본인이 작성한 게시물이 아닙니다')
+          }
+        }
+        return Article.findByIdAndUpdate(_id, {is_open : !req.body.is_open}, { new: true })
+      })
+      .then(r => {
+        res.send({ success: true, token: req.token })
+      })
+      .catch(e => {
+        res.send({ success: false, msg: e.message })
+      })
+  }
+})
+
+//이슈 오픈 / 클로즈 수정하기
 
 router.all('*', function(req, res, next) {
   next(createError(404, '그런 api 없어'));

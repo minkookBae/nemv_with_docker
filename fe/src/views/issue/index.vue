@@ -36,7 +36,7 @@
                             <viewer v-model="issue.content" />
 
                         </v-card-text>
-                        <v-card>
+                        <v-card style="padding : 10px">
                             <template>
                                 <v-btn icon color="pink" @click="like()">
                                     <v-icon color="white">favorite</v-icon>
@@ -77,6 +77,7 @@
                 <!-- 댓글 리스트 렌더링 -->
 
                 <!-- 댓글 부분 시작 -->
+                <v-spacer><br></v-spacer>
                 <template>
                     <v-card light>
                         <editor
@@ -84,8 +85,36 @@
                         v-model="formComment.content"
                         height = "200px"
                         />
-                        <v-card-text style="text-align : right; padding-top : 4px; padding-bottom:4px;">
-                            <v-btn color="success" @click="addComment()">
+                        
+                        <v-card-text style="text-align : right;">
+                            <!-- issue의 오픈 여부에 따라 달라짐 -->
+                            <template v-if="issue.is_open">
+                                <template v-if="formComment.content !== ''">
+                                    <v-btn class="ma-1" @click="issueStatusChange_with_comment()">코멘트와 함께 이슈 닫기
+                                        <v-icon color="red" right>block</v-icon>
+                                    </v-btn>
+                                </template>
+                                <template v-else>
+                                    <v-btn class="ma-1" @click="issueStatusChange()">이슈 닫기
+                                        <v-icon color="red" right>block</v-icon>
+                                    </v-btn>                                    
+                                </template>
+                            </template>
+
+                            <template v-else>
+                                <template v-if="formComment.content !== ''">
+                                    <v-btn class="ma-1" @click="issueStatusChange_with_comment()">코멘트와 함께 이슈 열기
+                                        <v-icon color="green" right>error</v-icon>
+                                    </v-btn>
+                                </template>
+                                <template v-else>
+                                    <v-btn class="ma-1" @click="issueStatusChange()">이슈 열기
+                                        <v-icon color="green" right>error</v-icon>
+                                    </v-btn>                                    
+                                </template>                       
+                            </template>
+
+                            <v-btn class="ma-1" color="success" @click="addComment()">
                                 코멘트 작성
                             </v-btn>
                         </v-card-text>
@@ -215,6 +244,7 @@ export default {
 
             },
             formComment : {
+                content : ''
             },
             form: {
                 title: '',
@@ -358,7 +388,23 @@ export default {
                 this.$store.commit('pop', {msg : "손님은 싫어요 표시를 할 수 없습니다.", color : "warning"})
 
             })
+        },
+        issueStatusChange () {
+            this.$axios.put(`article/status/${this.issue._id}`, this.issue)
+            .then((r) =>{
+                this.read(this.issue._id)
+            })
+            .catch(e =>{
+                this.$store.commit('pop', {msg : e.message, color : "warning"})
+            })
+        },
+
+        // 코멘트와 함께 저장함.
+        async issueStatusChange_with_comment() {
+            await this.issueStatusChange()
+            await this.addComment()
         }
+
     }
 
 }
