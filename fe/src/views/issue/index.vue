@@ -246,8 +246,9 @@ export default {
         },
         set_helper(){
             for(var i = 0; i < this.help_list.length ; i++){
-                if(!this.help_list_name.includes(this.help_list[i]._user.name))
-                    this.help_list_name.push(this.help_list[i]._user.name)
+                if(this.help_list[i]._user)
+                    if(!this.help_list_name.includes(this.help_list[i]._user.name))
+                            this.help_list_name.push(this.help_list[i]._user.name)
             }
         }
         ,
