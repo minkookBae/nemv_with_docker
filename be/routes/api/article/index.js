@@ -269,8 +269,10 @@ router.put('/status/:_id', (req, res, next) => {
           throw new Error('손님 게시물은 수정이 안됩니다')
         }
         else{
-          if (r._user.toString() !== req.user._id) {
-            if (r._user.lv < req.user.lv) throw new Error('본인이 작성한 게시물이 아닙니다')
+          if (r._user._id.toString() !== req.user._id) {
+            if (req.user.lv !== 0) {
+              throw new Error('본인이 작성한 게시물이 아닙니다')
+            }
           }
         }
         return Article.findByIdAndUpdate(_id, {is_open : !req.body.is_open}, { new: true })
@@ -279,6 +281,7 @@ router.put('/status/:_id', (req, res, next) => {
         res.send({ success: true, token: req.token })
       })
       .catch(e => {
+
         res.send({ success: false, msg: e.message })
       })
   }

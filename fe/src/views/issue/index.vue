@@ -76,10 +76,23 @@
                     </template>
                     <template v-else>
                         <v-card :key="i" light>
-                            <v-card-text>
-                                <v-spacer></v-spacer>
-                                <div><b>{{item._user.name}}</b>님이 이슈 상태를 변경하였습니다<span style="font-size:0.8rem; float:right;">{{id2date_2(item._id)}}</span></div>
-                            </v-card-text>
+                            <template v-if="item.is_openIssue">
+                                <v-card-text class="close_area">
+                                    <v-spacer></v-spacer>
+                                    <div><b>{{item._user.name}}</b>님이 이슈를 닫았습니다.<span style="font-size:0.8rem; float:right;">{{id2date_2(item._id)}}</span></div>
+                                </v-card-text>
+                            </template>
+                            <template v-else>
+                                <v-card-text class="open_area">
+                                    <v-spacer></v-spacer>
+                                    <div><b>{{item._user.name}}</b>님이 이슈를 다시 여셨습니다.<span style="font-size:0.8rem; float:right;">{{id2date_2(item._id)}}</span></div>
+                                </v-card-text>
+                            </template>
+                            <template v-if="item.content !== ''">
+                                <v-card-text>
+                                    <viewer v-model="item.content" />
+                                </v-card-text>
+                            </template>
                         </v-card>
                     </template>
                     <br :key = "i+2000">
@@ -106,7 +119,7 @@
                                     </v-btn>
                                 </template>
                                 <template v-else>
-                                    <v-btn class="ma-1" @click="issueStatusChange()">이슈 닫기
+                                    <v-btn class="ma-1" @click="issueStatusChange_with_comment()">이슈 닫기
                                         <v-icon color="green" right>check_circle</v-icon>
                                     </v-btn>                                    
                                 </template>
@@ -119,7 +132,7 @@
                                     </v-btn>
                                 </template>
                                 <template v-else>
-                                    <v-btn class="ma-1" @click="issueStatusChange()">이슈 열기
+                                    <v-btn class="ma-1" @click="issueStatusChange_with_comment()">이슈 열기
                                         <v-icon color="orange" right>help</v-icon>
                                     </v-btn>                                    
                                 </template>                       
@@ -403,10 +416,13 @@ export default {
         issueStatusChange () {
             this.$axios.put(`article/status/${this.issue._id}`, this.issue)
             .then((r) =>{
+                if(!r.data.success) this.$store.commit('pop', {msg : r.data.msg, color : "warning"})
+
                 this.read(this.issue._id)
             })
             .catch(e =>{
-                this.$store.commit('pop', {msg : "권한이 없습니다.", color : "warning"})
+                
+                this.$store.commit('pop', {msg : e.message, color : "warning"})
             })
         },
 
@@ -417,13 +433,16 @@ export default {
         },
 
         issueStatusChange_log(){
-            this.$axios.post(`comment/status/${this.issue._id}`, this.formComment)
+            var temp = {a : this.formComment, b : this.issue.is_open}
+            this.$axios.post(`comment/status/${this.issue._id}`, temp)
             .then((r)=>{
                 this.formComment.content = ''
+                if(!r.data.success) this.$store.commit('pop', {msg : r.data.msg, color : "warning"})
+
                 this.read(this.issue._id)
             })
             .catch((e)=>{
-                this.$store.commit('pop', {msg : "권한이 없습니다.", color : "warning"})
+                this.$store.commit('pop', {msg : e.message, color : "warning"})
             })
         }
 
@@ -435,6 +454,14 @@ export default {
 <style>
     .title_area {
         background-color : whitesmoke
+    }
+
+    .open_area{
+        background-color: lightgreen
+    }
+
+    .close_area{
+        background-color: lightpink
     }
 
     .tooltip-padding5 {
@@ -450,4 +477,6 @@ export default {
     .label_area{
         background-color: aliceblue
     }
+
+
 </style>
