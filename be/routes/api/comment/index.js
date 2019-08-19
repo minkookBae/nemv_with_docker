@@ -101,11 +101,18 @@ router.post('/status/:_article', (req, res, next) => {
   .then(r => {
     if (!r) throw createError(400, '잘못된 게시물입니다')
     // if (r.lv < req.user.lv) throw createError(403, '권한이 없습니다')
-    if(req.user._id !== r._user._id.toString()){
+    if(r._user){
+      if(req.user._id !== r._user._id.toString()){
+        if(req.user.lv !== 0){
+          throw new Error("권한이 없습니다.")
+        }
+      }
+    }
+    else{
       if(req.user.lv !== 0){
         throw new Error("권한이 없습니다.")
       }
-    }
+    }    
       
     const cmt = {
         content,
@@ -115,7 +122,6 @@ router.post('/status/:_article', (req, res, next) => {
         ip: '1.1.1.1',//req.ip,
         _user: req.user._id
     }
-    
     return Comment.create(cmt)
   })
   .then(r => {

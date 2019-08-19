@@ -489,7 +489,9 @@ export default {
             this.$axios.post(`comment/status/${this.issue._id}`, temp)
             .then((r)=>{
                 this.formComment.content = ''
-                if(!r.data.success) this.$store.commit('pop', {msg : r.data.msg, color : "warning"})
+                if(!r.data.success){
+                    this.$store.commit('pop', {msg : r.data.msg, color : "warning"})
+                }
 
                 this.read(this.issue._id)
             })
