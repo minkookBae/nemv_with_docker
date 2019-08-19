@@ -43,4 +43,14 @@ router.post('/in', (req, res, next) => {
     })
 })
 
+router.get('/dashboard3', (req, res, next)=>{
+  User.find().count()
+  .then(r => {
+    res.send({success : true, count : r, token : req.token})
+  })
+  .catch(e =>{
+    res.send({succes : false, msg : e.message})
+  })
+})
+
 module.exports = router;

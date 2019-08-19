@@ -44,12 +44,52 @@ router.get('/list/:_board', (req, res, next) => {
     })
 })
 
+router.get('/dashboard', (req, res, next) => {
+  Article.find().sort({"_id" : -1}).limit(3).populate({path : "_user", select : "name"}).select('title content _user')
+  .then(r => {
+    res.send({success : true, ds : r, token : req.token})
+  })
+  .catch(e => {
+    res.send({ success : false, msg : e.message})
+  })
+})
+
+router.get('/dashboard2', (req, res, next) => {
+  Article.find({"is_open" : true}).count()
+  .then(r => {
+    res.send({success : true, count : r, token : req.token})
+  })
+  .catch(e => {
+    res.send({ success : false, msg : e.message})
+  })
+})
+
+router.get('/dashboard4', (req, res, next) => {
+  Article.find().select('cnt.view')
+  .then(r => {
+    res.send({success : true, d : r, token : req.token})
+  })
+  .catch(e => {
+    res.send({ success : false, msg : e.message})
+  })
+})
+
+router.get('/dashboard5', (req, res, next) => {
+  Article.find().count()
+  .then(r => {
+    res.send({success : true, count : r, token : req.token})
+  })
+  .catch(e => {
+    res.send({ success : false, msg : e.message})
+  })
+})
+
 router.get('/read/:_id', (req, res, next) => {
   const _id = req.params._id
 
   let atc = {}
   
-  Article.findByIdAndUpdate(_id, { $inc: { 'cnt.view': 1 } }, { new: true }).populate({path : '_user', select : 'name'}).lean()
+  Article.findByIdAndUpdate(_id, { $inc: { 'cnt.view': 1 } }, { new: true }).populate({path : '_user _board', select : 'name'}).lean()
     .then(r => {
       if(!r) throw new Error('잘못된 게시판입니다.')
       atc = r

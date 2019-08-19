@@ -8,7 +8,7 @@
                             <span style=""><b>{{issue.title}}</b></span>
                             <v-spacer></v-spacer>
                             <v-tooltip bottom class="tooltip-padding5">
-                                <span style="float:right;" slot="activator"><v-icon>label</v-icon></span>
+                                <span style="float:right;" slot="activator"><v-icon @click.native="dialog = true, modLabeling()">label</v-icon></span>
                                 <span>라벨을 추가합니다</span>
                             </v-tooltip>
                             <v-tooltip bottom class="tooltip-padding5">
@@ -38,21 +38,28 @@
                         </v-card-text>
                         <v-card style="padding : 10px">
                             <template>
-                                <v-btn icon color="pink" @click="like()">
-                                    <v-icon color="white">favorite</v-icon>
-                                </v-btn>
+                                <v-tooltip bottom class="tooltip-padding5">
+                                    <v-btn icon color="pink" @click="like()" slot="activator">
+                                        <v-icon color="white">favorite</v-icon>
+                                    </v-btn>
+                                    <span>좋아요</span>
+                                </v-tooltip>
                                 <template>{{issue.like_member.length}}</template>
+
                             </template>
                             <!-- 좋아요 -->
 
                             <template>
-                                <v-btn icon color="blue" @click="dislike()">
-                                    <v-icon color="white">thumb_down_alt</v-icon>
-                                </v-btn>
+                                <v-tooltip bottom class="tooltip-padding5">
+                                    <v-btn icon color="blue" @click="dislike()" slot="activator">
+                                        <v-icon color="white">thumb_down_alt</v-icon>
+                                    </v-btn>
+                                    <span>별로예요</span>
+                                </v-tooltip>
                                 <template>{{issue.dislike_member.length}}</template>
                             </template>
 
-                            <!-- 싫어요 -->
+                            <!-- 별로예요 -->
                         </v-card>
 
                         
@@ -162,7 +169,7 @@
                     <v-card-title>관련 이슈</v-card-title>
                     <v-card>
                         <v-card-text class="label_area">
-                            000과 관련
+                            {{issue._board.name}}
                         </v-card-text>
                     </v-card>
                 </v-card>
@@ -246,6 +253,46 @@
                 <v-btn color="red darken-1" flat @click.native="dialog = false, dlMode = 0">취소</v-btn>
                 </v-card-actions>
             </v-card>
+
+
+            <v-card light v-else-if="dlMode === 3">
+                <v-card-title>
+                <span class="headline">라벨링 관리</span>
+                <v-spacer></v-spacer>
+                <v-btn
+                    icon
+                    @click="dialog=!dialog, dlMode = 0"
+                >
+                    <v-icon>clear</v-icon>
+                </v-btn>
+                </v-card-title>
+                <v-card-text>
+                <v-container grid-list-md style="padding:0px;">
+                    <v-layout row wrap>
+                        <v-flex xs12>
+                            <!-- <v-card>
+                                현재 등록된 라벨
+                            </v-card>
+                        </v-flex>
+
+                        <v-flex xs6>
+                            <v-card>
+                                라벨리스트
+                            </v-card> -->
+                            <Card @child-event="parentsMethod"/>
+                        </v-flex>                    
+                    </v-layout>
+
+                </v-container>
+                </v-card-text>
+                <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn color="green darken-1" flat @click="saveLabeling()">확인</v-btn>
+                <v-btn color="red darken-1" flat @click.native="dialog = false, dlMode = 0">취소</v-btn>
+                </v-card-actions>
+            </v-card>
+
+
         </v-dialog>
 
 
@@ -255,7 +302,10 @@
 <script>
 import moment from 'moment'
 import 'highlight.js/styles/github.css'
+import Card from '@/components/label/card.vue'
+
 export default {
+    components : { Card },
     data () {
         return {
             dlMode : 0,
@@ -264,7 +314,9 @@ export default {
                     view : 0,
                 },
                 like_member : [],
-                dislike_member : []
+                dislike_member : [],
+                _board : {
+                }
 
             },
             formComment : {
@@ -277,7 +329,7 @@ export default {
             dialog : false,
             ca : false,
             help_list : {},
-            help_list_name : []
+            help_list_name : [],
         }
     },
     mounted(){
@@ -444,6 +496,18 @@ export default {
             .catch((e)=>{
                 this.$store.commit('pop', {msg : e.message, color : "warning"})
             })
+        },
+        modLabeling (){
+            this.dlMode = 3
+        },
+        saveLabeling (){
+            console.log(Card.scene)
+            this.dlMode = 0
+            this.dialog = false
+            
+        },
+        parentsMethod(val){
+            console.log(val)
         }
 
     }

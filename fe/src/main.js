@@ -11,12 +11,16 @@ import 'tui-editor/dist/tui-editor-contents.css'
 import 'codemirror/lib/codemirror.css'
 import { Editor, Viewer } from '@toast-ui/vue-editor'
 //tui-editor 위지윅 에디터 사용하기 추가
+import Trend from 'vuetrend'
+// vuetrend 사용
+
 
 Vue.config.productionTip = false
 
 Vue.component('editor', Editor)
 Vue.component('viewer', Viewer)
 
+Vue.use(Trend)
 Vue.use(VeeValidate)
 
 new Vue({
