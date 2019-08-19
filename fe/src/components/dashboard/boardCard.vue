@@ -44,7 +44,7 @@ export default {
       articles : {},
       count : 0,
       items: [
-        { header: 'Today' }
+
       ]
     }
   },

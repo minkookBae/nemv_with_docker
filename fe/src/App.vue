@@ -291,6 +291,12 @@ export default {
               to: {
                 path: '/manage/boards'
               }
+            },
+            {
+              title : '대시보드',
+              to: {
+                path : '/manage/dashboard'
+              }
             }
           ]
         }

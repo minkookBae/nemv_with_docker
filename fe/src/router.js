@@ -82,8 +82,8 @@ export default new Router({
   routes: [
     {
       path: '/',
-      name: 'dashboard',
-      component: () => import('./views/dashboard'),
+      name: 'home',
+      component: () => import('./views/home'),
       beforeEnter: pageCheck
     },
     {
@@ -147,6 +147,13 @@ export default new Router({
       component: () => import('./views/manage/boards'),
       beforeEnter: pageCheck
     },
+    {
+      path: '/manage/dashboard',
+      name: 'dashboard',
+      component: () => import('./views/manage/dashboard'),
+      beforeEnter: pageCheck
+    },
+    
     // {
     //   // path: '/block/:msg',
     //   // name: '차단',

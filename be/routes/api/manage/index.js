@@ -11,5 +11,6 @@ router.use('/user', require('./user'))
 router.use('/page', require('./page'))
 router.use('/site', require('./site'))
 router.use('/board', require('./board'))
+router.use('/dashboard', require('./dashboard'))
 
 module.exports = router;
