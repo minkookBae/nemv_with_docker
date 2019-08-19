@@ -153,6 +153,12 @@ export default new Router({
       component: () => import('./views/manage/dashboard'),
       beforeEnter: pageCheck
     },
+    {
+      path: '/manage/labels',
+      name : 'labels',
+      component : () => import('./views/manage/labels'),
+      beforeEnter : pageCheck
+    },
     
     // {
     //   // path: '/block/:msg',

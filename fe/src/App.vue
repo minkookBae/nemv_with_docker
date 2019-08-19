@@ -293,6 +293,13 @@ export default {
               }
             },
             {
+              title : '라벨관리',
+              to : {
+                path : '/manage/labels'
+              }
+
+            },
+            {
               title : '대시보드',
               to: {
                 path : '/manage/dashboard'

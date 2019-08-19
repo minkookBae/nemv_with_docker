@@ -46,4 +46,30 @@ router.delete('/:_id', (req, res, next) => {
     })
 })
 
+router.put('/label/:_id', (req, res, next) => {
+  const _id = req.params._id
+  console.log(req.body)
+  const labels_name = req.body.name
+  Board.updateOne({ _id }, { $push: {labels : labels_name}})
+    .then(r => {
+      res.send({ success: true, msg: r, token: req.token })
+    })
+    .catch(e => {
+      res.send({ success: false, msg: e.message })
+    })
+})
+
+router.put('/label_del/:_id', (req, res, next) => {
+  const _id = req.params._id
+  const labels_name = req.body.name
+  
+  Board.updateOne({ _id }, { $pull: {labels : labels_name}})
+    .then(r => {
+      res.send({ success: true, msg: r, token: req.token })
+    })
+    .catch(e => {
+      res.send({ success: false, msg: e.message })
+    })
+})
+
 module.exports = router;
