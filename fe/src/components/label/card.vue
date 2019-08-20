@@ -11,7 +11,7 @@
         <div :class="column.props.className">
           <div class="card-column-header">
             <span class="column-drag-handle">&#x2630;</span>
-            {{ column.name }}
+            <b>{{ column.name }}</b>
           </div>
           <Container
             group-name="col"
@@ -25,7 +25,7 @@
           >
             <Draggable v-for="card in column.children" :key="card.id">
               <div :class="card.props.className" :style="card.props.style">
-                <p>{{ card.data }}</p>
+                {{card.data}}
               </div>
             </Draggable>
           </Container>

@@ -330,8 +330,12 @@ export default {
     getBoard () {
       this.$axios.get(`board/read/${this.$route.params.name}`)
         .then(({ data }) => {
-          if (!data.success) throw new Error(data.msg)
+          if (!data.success) throw new Error(404, 'Page not found')
           this.board = data.d
+          if(!this.board){
+                    this.$router.push('/e404')
+                    throw new Error(404,'Page not found')
+          }
           this.list()
         })
         .catch((e) => {

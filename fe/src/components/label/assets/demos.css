@@ -18,7 +18,7 @@
     padding: 10px;
     line-height: 100px;
     text-align: center;
-    /* width : 200px; */
+    width : 200px;
     display: block;
     background-color: #fff;
     outline: 0;
@@ -35,26 +35,50 @@
     padding: 10px;
     /* background-color: #fff; */
 }
-
+@media screen and (max-width:992px){
+    .card-scene {
+        padding: 0px;
+        /* background-color: #fff; */
+    }
+}
 .card-container {
     padding: 10px;
     margin: 5px;
+    border-top: 1px solid black;
     margin-right: 1rem;
     background-color: #f3f3f3;
     box-shadow: 0 1px 1px rgba(0, 0, 0, 0.12), 0 1px 1px rgba(0, 0, 0, 0.24);
 }
 
 .card {
-    
+    width: 275px;
     margin: 5px;
-    /* border: 1px solid #ccc; */
+    border: 1px solid #ccc;
     background-color: white;
     box-shadow: 0 1px 1px rgba(0, 0, 0, 0.12), 0 1px 1px rgba(0, 0, 0, 0.24);
     padding: 10px;
 }
 
+@media screen and (max-width:992px){
+    .card {
+        width: 120px;
+        margin: 0px;
+        border: 1px solid #ccc;
+        background-color: white;
+        box-shadow: 0 1px 1px rgba(0, 0, 0, 0.12), 0 1px 1px rgba(0, 0, 0, 0.24);
+        padding: 10px;
+    }
+}
+
+
+
 .card-column-header {
     font-size: 1.3em;
+}
+@media screen and (max-width:992px){
+    .card-column-header {
+        font-size: 1.2em;
+    }
 }
 
 .column-drag-handle {
@@ -75,14 +99,14 @@
 .opacity-ghost {
     transition: all .18s ease;
     opacity: 0.8;
-    /* transform: rotateZ(5deg); */
+    transform: rotateZ(5deg);
     background-color: cornflowerblue;
     box-shadow: 3px 3px 10px 3px rgba(0, 0, 0, 0.3);
 }
 
 .opacity-ghost-drop {
     opacity: 1;
-    /* transform: rotateZ(0deg); */
+    transform: rotateZ(0deg);
     background-color: white;
     box-shadow: 3px 3px 10px 3px rgba(0, 0, 0, 0.0);
 }
