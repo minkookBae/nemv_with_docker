@@ -1,5 +1,5 @@
 <template>
-  <div class="card-scene">
+  <div class="card-scene" v-if="loading">
     <Container
       orientation="horizontal"
       @drop="onColumnDrop($event)"
@@ -115,13 +115,16 @@ export default {
         showOnTop: true
       },
       labels : [],
-      labels2 : []
+      labels2 : [],
+      loading : false
     }
   },
-  mounted(){
+  async mounted(){
 
-    this.article_label(this.article)
-  
+    await this.article_label(this.article)
+    this.loading = true
+
+
   },
   methods: {
     onColumnDrop (dropResult) {
