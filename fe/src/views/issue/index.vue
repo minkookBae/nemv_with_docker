@@ -1,5 +1,5 @@
 <template>
-    <v-container fluid :grid-list-md="!$vuetify.breakpoint.xs" :class="$vuetify.breakpoint.xs ? 'pa-0' : ''">
+    <v-container v-if="loading" fluid :grid-list-md="!$vuetify.breakpoint.xs" :class="$vuetify.breakpoint.xs ? 'pa-0' : ''">
         <v-layout row wrap>
             <v-flex xs12 md9>
                 <template>
@@ -300,6 +300,7 @@ export default {
     components : { Card },
     data () {
         return {
+            loading : false,
             dlMode : 0,
             issue : {
                 cnt : {
@@ -341,6 +342,9 @@ export default {
                 this.issue = data.d
                 this.help_list = data.d._comments
                 this.set_helper()
+                })
+                .then(r=>{
+                    this.loading = true
                 })
                 .catch((e) => {
                 if (!e.response) this.$store.commit('pop', { msg: e.message, color: 'warning' })

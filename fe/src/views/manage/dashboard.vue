@@ -1,5 +1,5 @@
 <template>
-  <v-container fluid :grid-list-md="!$vuetify.breakpoint.xs">
+  <v-container v-if="loading" fluid :grid-list-md="!$vuetify.breakpoint.xs">
     <v-layout wrap row>
       <v-flex xs12 sm6 md3 class="pb-2">
         <small-card
@@ -82,6 +82,7 @@ export default {
 
   data () {
     return {
+      loading : false,
       count : 0,
       people : 0,
       articles : {},
@@ -90,11 +91,12 @@ export default {
     }
   },
 
-  mounted() {
-    this.getDashBoard2()
-    this.getDashBoard3()
-    this.getDashBoard4()
-    this.getDashBoard5()
+  async mounted() {
+    await this.getDashBoard2()
+    await this.getDashBoard3()
+    await this.getDashBoard4()
+    await this.getDashBoard5()
+    this.loading = true
   },
   methods : {
       getDashBoard2() {

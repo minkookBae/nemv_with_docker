@@ -1,5 +1,5 @@
 <template>
-  <v-container fluid :grid-list-md="!$vuetify.breakpoint.xs" :class="$vuetify.breakpoint.xs ? 'pa-0' : ''">
+  <v-container v-if="view_loading" fluid :grid-list-md="!$vuetify.breakpoint.xs" :class="$vuetify.breakpoint.xs ? 'pa-0' : ''">
     <v-layout row wrap>
       <v-flex xs12>
         <v-card>
@@ -221,6 +221,7 @@ export default {
       },
       articles: [],
       dialog: false,
+      view_loading : false,
       commentDialog : false,
       lvs: [0, 1, 2, 3],
       form: {
@@ -337,6 +338,9 @@ export default {
                     throw new Error(404,'Page not found')
           }
           this.list()
+        })
+        .then(r=>{
+          this.view_loading = true
         })
         .catch((e) => {
           if (!e.response) this.$store.commit('pop', { msg: e.message, color: 'warning' })

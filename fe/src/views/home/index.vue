@@ -1,5 +1,5 @@
 <template>
-    <v-app>
+    <v-app v-if="loading">
     <v-content class="v-content-no-padding">
       <section>
         <v-parallax src="/docker.png" height="600">
@@ -239,6 +239,7 @@ export default {
 
   data () {
     return {
+      loading : false,
       count : 0,
       people : 0,
       articles : {},
@@ -247,11 +248,12 @@ export default {
     }
   },
 
-  mounted() {
-    this.getDashBoard2()
-    this.getDashBoard3()
-    this.getDashBoard4()
-    this.getDashBoard5()
+  async mounted() {
+    await this.getDashBoard2()
+    await this.getDashBoard3()
+    await this.getDashBoard4()
+    await this.getDashBoard5()
+    this.loading = true
   },
   methods : {
       getDashBoard2() {
