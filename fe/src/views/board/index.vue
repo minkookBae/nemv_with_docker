@@ -274,12 +274,14 @@ export default {
     pagination: {
       handler() {
         this.list()
+        
       },
       deep: true
     },
     'params.search': {
       handler() {
         this.delay()
+        
         // this.list()
       }
     },
@@ -340,7 +342,7 @@ export default {
           this.list()
         })
         .then(r=>{
-          this.view_loading = true
+          // this.view_loading = true
         })
         .catch((e) => {
           if (!e.response) this.$store.commit('pop', { msg: e.message, color: 'warning' })
@@ -384,6 +386,9 @@ export default {
           this.articles = data.ds
           this.loading = false
           return this.articles
+        })
+        .then(r=>{
+          this.view_loading = true
         })
         .catch((e) => {
           if (!e.response) this.$store.commit('pop', { msg: e.message, color: 'warning' })
