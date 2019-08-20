@@ -493,16 +493,8 @@ export default {
         },
         modLabeling (){
             this.dlMode = 3
-        },
-        saveLabeling (){
-            console.log(Card.scene)
-            this.dlMode = 0
-            this.dialog = false
-            
-        },
-        parentsMethod(val){
-            console.log(val)
         }
+
 
     }
 

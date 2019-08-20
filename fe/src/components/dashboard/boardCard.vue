@@ -73,7 +73,6 @@ export default {
         })
         .catch((e) => {
           if (!e.response) this.$store.commit('pop', { msg: e.message, color: 'warning' })
-          console.log(e.message)
         })
       }
 

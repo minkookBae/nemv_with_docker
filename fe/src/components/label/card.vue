@@ -164,7 +164,6 @@ export default {
         }
 
         for(var i = 0; i< temp.length ; i++){
-          console.log("야호")
           var temp2 = {type : 'draggable', id : `${1}${i}`, props: {className : 'card', style : {backgroundColor : pickColor()}}, data: temp[i]}
           this.scene.children[1].children.push(temp2)
         }
@@ -199,7 +198,6 @@ export default {
     
     save_label(article){
       var data = {register : this.scene.children[0].children}
-      console.log(data)
       this.$axios.put(`/article/label/${article}`, data)
       .then((r)=>{
         if(!r.data.success) throw new Error(r.data.msg)

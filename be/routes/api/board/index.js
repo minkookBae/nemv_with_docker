@@ -5,7 +5,6 @@ const Board = require('../../../models/boards')
 
 router.get('/read/:name', (req, res, next) => {
   const name = req.params.name
-  console.log(req.params)
 
   Board.findOne({ name })
     .then(r => {
