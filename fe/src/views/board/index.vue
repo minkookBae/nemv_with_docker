@@ -35,7 +35,7 @@
                     <v-icon color="green" v-else>check_circle</v-icon>
                 </td>
                 <td :class="headers[1].class"><a @click="move(props.item)">{{ props.item.title }}</a></td>
-                <td :class="headers[2].class">{{ props.item.labels.slice(0,).toString().replace(',',' ') }}</td>
+                <td :class="headers[2].class">{{ props.item.labels.slice(0,).toString().replace(',',', ')}}</td>
                 <td :class="headers[3].class">{{ props.item._user ? props.item._user.name : '손님' }}</td>
                 <td :class="headers[4].class">{{ props.item.cnt.view }}</td>
                 <td :class="headers[5].class">{{ props.item.like_member.length }}</td>
@@ -70,7 +70,7 @@
     </v-btn>
     <v-dialog v-model="dialog" persistent max-width="700">
       <v-card light v-if="!dlMode">
-        <v-card-title>
+        <!-- <v-card-title>
           <span class="headline">{{selArticle.title}}</span>
           <v-spacer></v-spacer>
           <v-btn
@@ -143,7 +143,7 @@
           @keyup.enter = "addComment()"
           >
           </v-text-field>
-        </v-card-text>
+        </v-card-text> -->
       </v-card>
       <v-card light v-else>
         <v-card-title>
@@ -185,7 +185,7 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-    <v-dialog width="400" v-model="commentDialog">
+    <!-- <v-dialog width="400" v-model="commentDialog">
       <v-card>
         <v-card-text>
           <v-text-field
@@ -205,7 +205,7 @@
         </v-card-actions>
       </v-card>
 
-     </v-dialog>
+     </v-dialog> -->
   </v-container>
 </template>
 

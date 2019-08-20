@@ -62,10 +62,7 @@
         ></trend-card>
       </v-flex>
 
-      <v-flex xs12 sm6 class="pb-2">
-        
-      </v-flex>
-      <v-flex xs12 sm6 class="pb-2">
+      <v-flex xs12 sm12 class="pb-2">
         <board-card></board-card>
       </v-flex>
     </v-layout>

@@ -60,7 +60,7 @@ const pickColor = () => {
   return cardColors[rand]
 }
 
-var scene = {
+const scene = {
   type: 'container',
   props: {
     orientation: 'horizontal'
@@ -156,19 +156,19 @@ export default {
       .then((r)=>{
         if(!r.data.success) throw new Error(r.data.msg)
         this.labels = r.data.d.labels
+        var temp = []
         for(var i = 0; i< this.labels.length ; i++){
-          if(this.labels2.includes(this.labels[i])){
-            var index = this.labels.indexOf(this.labels[i])
-            if(index > -1){
-              this.labels.splice(index, 1)
-            }
+          if(!this.labels2.includes(this.labels[i])){
+            temp.push(this.labels[i])
           }
         }
-        for(var i = 0; i< this.labels.length ; i++){
-          var temp = {type : 'draggable', id : `${1}${i}`, props: {className : 'card', style : {backgroundColor : pickColor()}}, data: this.labels[i]}
-          
-          this.scene.children[1].children.push(temp)
+
+        for(var i = 0; i< temp.length ; i++){
+          console.log("야호")
+          var temp2 = {type : 'draggable', id : `${1}${i}`, props: {className : 'card', style : {backgroundColor : pickColor()}}, data: temp[i]}
+          this.scene.children[1].children.push(temp2)
         }
+      
         //리스트에 추가
       
       })

@@ -343,26 +343,17 @@ router.get('/:_id', (req, res, next) =>{
 router.put(`/label/:_id`, (req, res, next) =>{
   const _id = req.params._id
   const data = req.body.register
-
-  var temp = []
+  const temp = []
   for(var i = 0 ; i< data.length ; i ++){
     temp.push(data[i].data)
   }
-  console.log(temp)
 
   Article.findById(_id)
   .then(r => {
     if (!r) throw new Error('게시물이 존재하지 않습니다')
-    if (!r._user){
-      throw new Error('손님 게시물은 수정이 안됩니다')
-    }
-    else{
-      if (r._user._id.toString() !== req.user._id) {
-        if (req.user.lv !== 0) {
-          throw new Error('본인이 작성한 게시물이 아닙니다')
-        }
-      }
-    }
+    if(!req.user) throw new Error('손님은 수정이 불가능합니다.')
+    if(req.user.lv !== 0 ) throw new Error ('라벨링은 관리자만 가능합니다.')
+
     return Article.findByIdAndUpdate(_id, {labels : temp}, {new : true})
   })
   .then(rs =>{

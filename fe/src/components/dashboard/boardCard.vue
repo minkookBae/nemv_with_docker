@@ -27,8 +27,9 @@
           
         >
           <v-list-tile-content>
-              <v-list-tile-title>{{item.title}} - {{item.name}}</v-list-tile-title>
-              <v-list-tile-sub-title v-html="item.content">
+              <v-list-tile-title><b>{{item.title}} - {{item.name}}</b></v-list-tile-title>
+              <v-list-tile-sub-title>
+                <viewer v-model="item.content"/>
               
               </v-list-tile-sub-title>
           </v-list-tile-content>
