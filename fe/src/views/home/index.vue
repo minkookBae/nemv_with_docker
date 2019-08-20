@@ -3,25 +3,6 @@
     <v-content class="v-content-no-padding">
       <section>
         <v-parallax src="/docker.png" height="600">
-          <!-- <v-layout
-            column
-            align-center
-            justify-center
-            class="white--text"
-          >
-            <img src="" alt="">
-            <h1 class="white--text mb-2 display-1 text-center">메인 페이지</h1>
-            <div class="subheading mb-4 text-center">세부사항</div>
-            <v-btn
-              class="mt-12"
-              color="rgb(255,0,0)"
-              dark
-              large
-              @click="$router.push('board/프로젝트')"
-            >
-              Get Started
-            </v-btn>
-          </v-layout> -->
         </v-parallax>
       </section>
 
@@ -34,13 +15,13 @@
         >
           <v-flex xs12 sm4 class="my-4">
             <div class="text-center">
-              <h2 class="headline">The best way to start developing</h2>
+              <h2 class="nanum">타이틀</h2>
               <span class="subheading">
-                Cras facilisis mi vitae nunc
+                세부사항
               </span>
             </div>
           </v-flex>
-          <v-flex xs12>
+          <!-- <v-flex xs12>
             <v-container grid-list-xl>
               <v-layout row wrap align-center>
                 <v-flex xs12 md4>
@@ -90,7 +71,7 @@
                 </v-flex>
               </v-layout>
             </v-container>
-          </v-flex>
+          </v-flex> -->
         </v-layout>
       </section>
 <!-- 
@@ -224,29 +205,6 @@
 
         ></small-card>
       </v-flex>
-
-      <v-flex xs12 sm4 class="pb-2">
-        <trend-card
-          title="주간 이슈 현황"
-          :data="[4, 7, 9, 5, 6, 4, 5]"
-          :gradient="['#6fa8dc', '#42b983', '#2c3e50']"
-        ></trend-card>
-      </v-flex>
-      <v-flex xs12 sm4 class="pb-2">
-        <trend-card
-          title="주간 사용자 현황"
-          :data="[3, 1, 2, 1, 0, 4, 2]"
-          :gradient="['red', 'orange', 'yellow']"
-        ></trend-card>
-      </v-flex>
-      <v-flex xs12 sm4 class="pb-2">
-        <trend-card
-          title="주간 조회수 현황"
-          :data="[33, 22, 2, 43, 33, 1, 55]"
-          :gradient="['blue', 'green', 'sky']"
-        ></trend-card>
-      </v-flex>
-
       <v-flex xs12 sm12 class="pb-2">
         <board-card></board-card>
       </v-flex>
@@ -352,8 +310,17 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
+    @import url(https://cdn.rawgit.com/openhiun/hangul/14c0f6faa2941116bb53001d6a7dcd5e82300c3f/nanumbarungothic.css);
+
     .v-content-no-padding {
         padding : 0 15px !important;
     }
+
+    .nanum{
+      font-family: 'Nanum Barun Gothic', sans-serif;
+    }
+
+
+
 </style>

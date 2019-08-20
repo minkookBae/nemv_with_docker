@@ -34,7 +34,7 @@
                     <v-icon color="orange" v-if="props.item.is_open">help</v-icon>
                     <v-icon color="green" v-else>check_circle</v-icon>
                 </td>
-                <td :class="headers[1].class"><a @click="move(props.item)">{{ props.item.title }}</a></td>
+                <td :class="headers[1].class"><a @click="move(props.item)">{{ props.item.title.length > 25 ? props.item.title.slice(0,25).concat(' ...'): props.item.title}}</a></td>
                 <td :class="headers[2].class">{{ props.item.labels.slice(0,).toString().replace(',',', ')}}</td>
                 <td :class="headers[3].class">{{ props.item._user ? props.item._user.name : '손님' }}</td>
                 <td :class="headers[4].class">{{ props.item.cnt.view }}</td>
@@ -231,11 +231,11 @@ export default {
       headers: [
         { text: '상태', value: 'is_open', sortable : true, width:'1%'},
         { text: '제목', value: 'title', sortable: true, align: 'left', width:'15%'},
-        { text: '라벨', value: 'labels', sortable : true ,width:'1%'},
-        { text: '글쓴이', value: '_user', sortable: false ,width:'1%'},
-        { text: '조회수', value: 'cnt.view', sortable: true ,width:'1%'},
-        { text: '추천', value: 'like_member', sortable: true ,width:'1%'},
-        { text: '댓글', value: 'comments_count', sortable: true ,width:'1%'},
+        { text: '라벨', value: 'labels', sortable : true , class: 'hidden-sm-and-down',width:'1%'},
+        { text: '글쓴이', value: '_user', sortable: false , class: 'hidden-sm-and-down',width:'1%'},
+        { text: '조회수', value: 'cnt.view', sortable: true , class: 'hidden-sm-and-down',width:'1%'},
+        { text: '추천', value: 'like_member', sortable: true , class: 'hidden-sm-and-down',width:'1%'},
+        { text: '댓글', value: 'comments_count', sortable: true , class: 'hidden-sm-and-down',width:'1%'},
         { text: '날짜', value: '_id', sortable: true, class: 'hidden-sm-and-down' ,width:'1%'}
       ],
       loading: false,

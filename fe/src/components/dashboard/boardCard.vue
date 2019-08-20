@@ -61,14 +61,26 @@ export default {
           return this.articles
         })
         .then(r=>{
-          
-          for(var i = 0 ; i < 3 ; i++){
-            
-            var temp = {title : this.articles[i].title, content : this.articles[i].content, name : ''}
-            if(this.articles[i]._user) temp.name = this.articles[i]._user.name
-            else temp.name = "손님"
+          if(!r) throw new Error('글이 없습니다.')
+          if(r.length === 3){
+            for(var i = 0 ; i < 3 ; i++){
+              
+              var temp = {title : this.articles[i].title, content : this.articles[i].content, name : ''}
+              if(this.articles[i]._user) temp.name = this.articles[i]._user.name
+              else temp.name = "손님"
 
-            this.items.push(temp)
+              this.items.push(temp)
+            }
+          }
+          else{
+            for(var i = 0 ; i < r.length ; i++){
+              
+              var temp = {title : this.articles[i].title, content : this.articles[i].content, name : ''}
+              if(this.articles[i]._user) temp.name = this.articles[i]._user.name
+              else temp.name = "손님"
+
+              this.items.push(temp)
+            }            
           }
         })
         .catch((e) => {
