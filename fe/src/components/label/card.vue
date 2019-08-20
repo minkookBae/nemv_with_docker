@@ -32,14 +32,16 @@
         </div>
       </Draggable>
     </Container>
-    <v-btn @click="emitData()">클릭</v-btn>
+    <div style="text-align:center;">
+      <v-btn @click="save_label(article)" color="success">저장</v-btn>
+      <v-btn @click.native="cancel()" color="warning">취소</v-btn>
+      </div>
   </div>
 </template>
 
 <script>
 import { Container, Draggable } from 'vue-smooth-dnd'
 import { applyDrag, generateItems } from './utils/helpers'
-const lorem = `짧고 짧은 글귀입니다. 정말 짧아요`
 const columnNames = ['등록된 라벨', '라벨 리스트']
 const cardColors = [
   'azure',
@@ -57,35 +59,48 @@ const pickColor = () => {
   const rand = Math.floor(Math.random() * 10)
   return cardColors[rand]
 }
-const scene = {
+
+var scene = {
   type: 'container',
   props: {
     orientation: 'horizontal'
   },
-  children: generateItems(2, i => ({
-    id: `column${i}`,
+  children: 
+    [{
+    id: `column${0}`,
     type: 'container',
-    name: columnNames[i],
+    name: columnNames[0],
     props: {
       orientation: 'vertical',
       className: 'card-container'
     },
-    children: generateItems(2, j => ({
-      type: 'draggable',
-      id: `${i}${j}`,
-      props: {
-        className: 'card',
-        style: {backgroundColor: pickColor()}
-      },
-      data: lorem.slice(0, Math.floor(Math.random() * 150) + 30)
-    }))
-  }))
+    children: 
+    [
+      //등록된 라벨
+    ]},
+
+    {
+    id: `column${1}`,
+    type: 'container',
+    name: columnNames[1],
+    props: {
+      orientation: 'vertical',
+      className: 'card-container'
+    },
+    children: 
+    [
+      // 라벨 리스트
+    ]}
+    ]
+  
+
 }
+
 export default {
 
   name: 'Cards',
   components: {Container, Draggable},
-  props : ["message"],
+  props : ["board" , "article"],
   data () {
     return {
       scene,
@@ -98,8 +113,15 @@ export default {
         className: 'drop-preview',
         animationDuration: '150',
         showOnTop: true
-      }
+      },
+      labels : [],
+      labels2 : []
     }
+  },
+  mounted(){
+
+    this.article_label(this.article)
+  
   },
   methods: {
     onColumnDrop (dropResult) {
@@ -129,12 +151,70 @@ export default {
     log (...params) {
     //   console.log(...params)
     },
-    emitData(){
+    board_label(board){
+      this.$axios.get(`/board/read/${board}`)
+      .then((r)=>{
+        if(!r.data.success) throw new Error(r.data.msg)
+        this.labels = r.data.d.labels
+        for(var i = 0; i< this.labels.length ; i++){
+          if(this.labels2.includes(this.labels[i])){
+            var index = this.labels.indexOf(this.labels[i])
+            if(index > -1){
+              this.labels.splice(index, 1)
+            }
+          }
+        }
+        for(var i = 0; i< this.labels.length ; i++){
+          var temp = {type : 'draggable', id : `${1}${i}`, props: {className : 'card', style : {backgroundColor : pickColor()}}, data: this.labels[i]}
+          
+          this.scene.children[1].children.push(temp)
+        }
+        //리스트에 추가
+      
+      })
+      .catch((e)=>{
+        if (!e.response) this.$store.commit('pop', { msg: e.message, color: 'warning' })
+      })
+    },
+    article_label(article){
 
+      this.$axios.get(`/article/${article}`)
+      .then((r)=>{
+        if(!r.data.success) throw new Error(r.data.msg)
+        this.labels2 = r.data.d.labels
+        
+        for(var i = 0; i < this.labels2.length ; i++){
+          var temp2 = {type : 'draggable', id : `${0}${i}`, props: {className : 'card', style : {backgroundColor : pickColor()}}, data: this.labels2[i]}
+          this.scene.children[0].children.push(temp2)
+        }
+        
+      })
+      .then((r)=>{
+        this.board_label(this.board)
+      })
+      .catch((e)=>{
+        if (!e.response) this.$store.commit('pop', { msg: e.message, color: 'warning' })      
+      })
+    },
+    
+    save_label(article){
       var data = {register : this.scene.children[0].children}
+      console.log(data)
+      this.$axios.put(`/article/label/${article}`, data)
+      .then((r)=>{
+        if(!r.data.success) throw new Error(r.data.msg)
+        this.$router.go()
+      })
+      .catch(e=>{
+        if (!e.response) this.$store.commit('pop', { msg: e.message, color: 'warning' })      
 
-      this.$emit("child-event",data)
+      })
     }
+    ,
+    cancel(){
+      this.$router.go()
+    }
+
   }
 }
 </script>

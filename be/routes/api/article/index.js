@@ -328,8 +328,53 @@ router.put('/status/:_id', (req, res, next) => {
 })
 
 
+router.get('/:_id', (req, res, next) =>{
+  const _id = req.params._id
+  console.log(_id)
+  Article.findById(_id).select('labels')
+  .then((r)=>{
+    res.send({success : true, d : r, token : req.token})
+  })
+  .catch((e)=>{
+    res.send({ success: false, msg: e.message })
+  })
+})
 
-//이슈 오픈 / 클로즈 수정하기
+router.put(`/label/:_id`, (req, res, next) =>{
+  const _id = req.params._id
+  const data = req.body.register
+
+  var temp = []
+  for(var i = 0 ; i< data.length ; i ++){
+    temp.push(data[i].data)
+  }
+  console.log(temp)
+
+  Article.findById(_id)
+  .then(r => {
+    if (!r) throw new Error('게시물이 존재하지 않습니다')
+    if (!r._user){
+      throw new Error('손님 게시물은 수정이 안됩니다')
+    }
+    else{
+      if (r._user._id.toString() !== req.user._id) {
+        if (req.user.lv !== 0) {
+          throw new Error('본인이 작성한 게시물이 아닙니다')
+        }
+      }
+    }
+    return Article.findByIdAndUpdate(_id, {labels : temp}, {new : true})
+  })
+  .then(rs =>{
+    res.send({success : true, token : req.token})
+  })
+  .catch(e =>{
+    res.send({ success: false, msg: e.message })
+  })
+})
+
+// 라벨링 저장하기 API
+
 
 router.all('*', function(req, res, next) {
   next(createError(404, '그런 api 없어'));

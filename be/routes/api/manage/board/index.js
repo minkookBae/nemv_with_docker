@@ -48,7 +48,7 @@ router.delete('/:_id', (req, res, next) => {
 
 router.put('/label/:_id', (req, res, next) => {
   const _id = req.params._id
-  console.log(req.body)
+  // console.log(req.body)
   const labels_name = req.body.name
   Board.updateOne({ _id }, { $push: {labels : labels_name}})
     .then(r => {

@@ -26,6 +26,9 @@
             <template v-else>
             <v-card-title>
                 <span class="headline">라벨 삭제</span>
+                <v-btn icon @click="edit = !edit">
+                  <v-icon>clear</v-icon>
+                </v-btn>
             </v-card-title>
             <v-card-title>
                 게시판 이름 : {{board.name}}

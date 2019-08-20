@@ -9,7 +9,7 @@
                             <v-spacer></v-spacer>
                             <v-tooltip bottom class="tooltip-padding5">
                                 <span style="float:right;" slot="activator"><v-icon @click.native="dialog = true, modLabeling()">label</v-icon></span>
-                                <span>라벨을 추가합니다</span>
+                                <span>라벨을 관리합니다</span>
                             </v-tooltip>
                             <v-tooltip bottom class="tooltip-padding5">
                                 <span style="float:right;" slot="activator"><v-icon @click.native="dialog = true, modDialog()">create</v-icon></span>
@@ -169,8 +169,13 @@
                     <v-card-title>관련 이슈</v-card-title>
                     <v-card>
                         <v-card-text class="label_area">
-                            {{issue._board.name}}
+                            <b>{{issue._board.name}}</b>
                         </v-card-text>
+                        <template v-for="(item, i) in issue.labels">
+                            <v-card-text class="label_area" :key="i">
+                                {{item}}
+                            </v-card-text>
+                        </template>
                     </v-card>
                 </v-card>
             </v-flex>
@@ -261,7 +266,7 @@
                 <v-spacer></v-spacer>
                 <v-btn
                     icon
-                    @click="dialog=!dialog, dlMode = 0"
+                    @click="$router.go()"
                 >
                     <v-icon>clear</v-icon>
                 </v-btn>
@@ -270,26 +275,13 @@
                 <v-container grid-list-md style="padding:0px;">
                     <v-layout row wrap>
                         <v-flex xs12>
-                            <!-- <v-card>
-                                현재 등록된 라벨
-                            </v-card>
-                        </v-flex>
-
-                        <v-flex xs6>
-                            <v-card>
-                                라벨리스트
-                            </v-card> -->
-                            <Card @child-event="parentsMethod"/>
+                            <Card :board="issue._board.name" :article="issue._id"/>
                         </v-flex>                    
                     </v-layout>
 
                 </v-container>
                 </v-card-text>
-                <v-card-actions>
-                <v-spacer></v-spacer>
-                <v-btn color="green darken-1" flat @click="saveLabeling()">확인</v-btn>
-                <v-btn color="red darken-1" flat @click.native="dialog = false, dlMode = 0">취소</v-btn>
-                </v-card-actions>
+
             </v-card>
 
 

@@ -104,14 +104,12 @@ router.post('/status/:_article', (req, res, next) => {
     if(r._user){
       if(req.user._id !== r._user._id.toString()){
         if(req.user.lv !== 0){
-          throw new Error("권한이 없습니다.")
+          throw new Error("본인이 작성한 게시글이 아닙니다.")
         }
       }
     }
     else{
-      if(req.user.lv !== 0){
-        throw new Error("권한이 없습니다.")
-      }
+        throw new Error("손님은 하실 수 없습니다.")
     }    
       
     const cmt = {
