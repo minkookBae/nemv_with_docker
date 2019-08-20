@@ -275,7 +275,7 @@
                 <v-container grid-list-md style="padding:0px;">
                     <v-layout row wrap>
                         <v-flex xs12>
-                            <Card :board="issue._board.name" :article="issue._id"/>
+                            <Card :board="issue._board.name" :article="issue._id" @cancel="cancel_label"/>
                         </v-flex>                    
                     </v-layout>
 
@@ -497,6 +497,10 @@ export default {
         },
         modLabeling (){
             this.dlMode = 3
+        },
+        cancel_label : function(){
+            this.dlMode = 0
+            this.dialog = false
         }
 
 

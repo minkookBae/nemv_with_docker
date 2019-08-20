@@ -212,10 +212,13 @@ export default {
         if (!e.response) this.$store.commit('pop', { msg: e.message, color: 'warning' })      
 
       })
-    }
-    ,
+    },
     cancel(){
-      this.$router.go()
+      this.scene.children[0].children = []
+      this.scene.children[1].children = []
+
+      this.$emit('cancel',true)
+      
     }
 
   }
