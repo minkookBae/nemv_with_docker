@@ -119,10 +119,9 @@ export default {
       loading : false
     }
   },
-  async mounted(){
+  mounted(){
 
-    await this.article_label(this.article)
-    this.loading = true
+    this.article_label(this.article)
 
 
   },
@@ -173,6 +172,9 @@ export default {
       
         //리스트에 추가
       
+      })
+      .then(r=>{
+        this.loading = true
       })
       .catch((e)=>{
         if (!e.response) this.$store.commit('pop', { msg: e.message, color: 'warning' })
