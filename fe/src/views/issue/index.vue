@@ -515,11 +515,11 @@ export default {
     }
 
     .open_area{
-        background-color: lightgreen
+        background-color: lightpink
     }
 
     .close_area{
-        background-color: lightpink
+        background-color: lightgreen
     }
 
     .tooltip-padding5 {
